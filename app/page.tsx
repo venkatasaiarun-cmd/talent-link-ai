@@ -1,5 +1,6 @@
 'use client';
 import React, { useState } from 'react';
+import ReactMarkdown from 'react-markdown';
 
 export default function TalentLink() {
   const [messages, setMessages] = useState([
@@ -77,7 +78,7 @@ export default function TalentLink() {
   return (
     <div style={{ 
       display: 'flex', 
-      flexWrap: 'wrap', // ALLOWS COLUMNS TO STACK ON PHONE SCREENS
+      flexWrap: 'wrap', 
       minHeight: '100vh', 
       width: '100vw', 
       fontFamily: 'system-ui, -apple-system, sans-serif', 
@@ -89,7 +90,7 @@ export default function TalentLink() {
       
       {/* COLUMN 1: SIDEBAR */}
       <div style={{ 
-        flex: '1 1 250px', // Shrinks/Grows but jumps down if space runs out
+        flex: '1 1 250px', 
         boxSizing: 'border-box',
         backgroundColor: '#030712', 
         padding: '24px 20px', 
@@ -101,7 +102,7 @@ export default function TalentLink() {
         boxShadow: '4px 0 24px rgba(0,0,0,0.4)' 
       }}>
         <div>
-          {/* FUSED THREE-IN-ONE BRAND LOGO COMPONENT */}
+          {/* BRAND LOGO COMPONENT */}
           <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '30px', paddingBottom: '20px', borderBottom: '1px solid #1e293b' }}>
             <div style={{ display: 'flex', background: 'linear-gradient(135deg, #1e293b 0%, #0f172a 100%)', padding: '8px', borderRadius: '10px', border: '1px solid #10b981', boxShadow: '0 0 12px rgba(16,185,129,0.2)' }}>
               <span style={{ fontSize: '18px' }}>📄</span>
@@ -111,13 +112,13 @@ export default function TalentLink() {
             <h2 style={{ fontSize: '18px', margin: 0, fontWeight: '800', background: 'linear-gradient(90deg, #38bdf8, #0ea5e9)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', letterSpacing: '0.5px' }}>Talent-Link AI</h2>
           </div>
 
-          {/* PULSING SYSTEM STATE BADGE */}
+          {/* SYSTEM STATE BADGE */}
           <div style={{ padding: '12px 14px', backgroundColor: 'rgba(30,41,59,0.5)', borderRadius: '8px', fontSize: '12px', color: '#38bdf8', marginBottom: '25px', fontWeight: '600', borderLeft: '4px solid #10b981', backdropFilter: 'blur(8px)', display: 'flex', alignItems: 'center', gap: '8px' }}>
             <span style={{ display: 'inline-block', width: '8px', height: '8px', backgroundColor: '#10b981', borderRadius: '50%', boxShadow: '0 0 8px #10b981' }}></span>
             Pipeline Status: Engine Active
           </div>
 
-          {/* VISUAL DATABASE GLOWING STACK */}
+          {/* VISUAL DATABASE STACK */}
           <div style={{ marginBottom: '20px', background: 'linear-gradient(145deg, #0f172a, #030712)', padding: '20px 15px', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.05)', textAlign: 'center', boxShadow: '0 8px 16px rgba(0,0,0,0.3)' }}>
             <div style={{ fontSize: '32px', marginBottom: '8px', filter: 'drop-shadow(0 0 8px rgba(16,185,129,0.3))' }}>🗄️</div>
             <div style={{ fontSize: '11px', color: '#64748b', textTransform: 'uppercase', fontWeight: '700', letterSpacing: '1px' }}>Astra DB Engine</div>
@@ -125,7 +126,7 @@ export default function TalentLink() {
           </div>
         </div>
 
-        {/* RECENT CHATS / PROJECT HISTORY */}
+        {/* ACTIVE PROJECTS */}
         <div style={{ borderTop: '1px solid #1e293b', paddingTop: '20px' }}>
           <div style={{ fontSize: '11px', color: '#475569', textTransform: 'uppercase', marginBottom: '12px', fontWeight: '700', letterSpacing: '0.5px' }}>Active Projects</div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
@@ -138,11 +139,11 @@ export default function TalentLink() {
 
       {/* COLUMN 2: CHAT HUB */}
       <div style={{ 
-        flex: '2 1 350px', // Takes up much larger default priority width space
+        flex: '2 1 350px', 
         boxSizing: 'border-box',
         display: 'flex', 
         flexDirection: 'column', 
-        height: '70vh', // Sets scroll heights securely on mobile touch-points
+        height: '70vh', 
         minHeight: '450px',
         borderRight: '1px solid #1e293b', 
         borderBottom: '1px solid #1e293b',
@@ -171,13 +172,21 @@ export default function TalentLink() {
                 borderRadius: '14px', 
                 fontSize: '13.5px', 
                 lineHeight: '1.6', 
-                whiteSpace: 'pre-wrap', 
                 backgroundColor: m.role === 'user' ? '#047857' : '#ffffff', 
                 color: m.role === 'user' ? '#ffffff' : '#0f172a', 
                 border: m.role === 'user' ? '1px solid #10b981' : 'none',
                 boxShadow: '0 4px 14px rgba(0,0,0,0.15)',
               }}>
-                {m.content.replace(/### /g, '').replace(/\*\*/g, '')}
+                {m.role === 'user' ? (
+                  <div style={{ whiteSpace: 'pre-wrap' }}>{m.content}</div>
+                ) : (
+                  /* PREMIUM ASYNC MARKDOWN RENDERING FOR CHAT FLOW */
+                  <div className="prose prose-slate max-w-none text-sm leading-relaxed 
+                    [&_h3]:text-base [&_h3]:font-bold [&_h3]:text-slate-900 [&_h3]:border-b [&_h3]:border-slate-200 [&_h3]:pb-1 [&_h3]:mt-4 [&_h3]:mb-2
+                    [&_ul]:list-disc [&_ul]:pl-5 [&_li]:my-1 [&_strong]:text-blue-600 [&_strong]:font-semibold">
+                    <ReactMarkdown>{m.content}</ReactMarkdown>
+                  </div>
+                )}
                 
                 {m.role === 'assistant' && (
                   <div style={{ marginTop: '12px', display: 'flex', justifyContent: 'flex-end', borderTop: '1px solid #e2e8f0', paddingTop: '10px' }}>
@@ -256,7 +265,13 @@ export default function TalentLink() {
                 <span style={{ fontWeight: '800', color: '#047857', fontSize: '13px' }}>{res.title}</span>
                 <button onClick={() => copyToClipboard(res.details)} style={{ backgroundColor: 'transparent', border: 'none', color: '#64748b', fontSize: '11px', cursor: 'pointer', fontWeight: '700' }}>📋 Copy</button>
               </div>
-              <div style={{ fontSize: '12.5px', color: '#1e293b', lineHeight: '1.6', whiteSpace: 'pre-wrap' }}>{res.details}</div>
+              
+              {/* PREMIUM ASYNC MARKDOWN RENDERING FOR SCORECARD COMPONENT */}
+              <div className="prose prose-slate max-w-none text-xs leading-relaxed 
+                [&_h3]:text-sm [&_h3]:font-bold [&_h3]:text-slate-900 [&_h3]:border-b [&_h3]:border-slate-100 [&_h3]:pb-1 [&_h3]:mt-3 [&_h3]:mb-1.5
+                [&_ul]:list-disc [&_ul]:pl-4 [&_li]:my-0.5 [&_strong]:text-blue-600 [&_strong]:font-semibold text-slate-800">
+                <ReactMarkdown>{res.details}</ReactMarkdown>
+              </div>
             </div>
           ))}
           

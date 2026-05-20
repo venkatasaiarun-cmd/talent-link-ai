@@ -1,0 +1,32 @@
+import { NextResponse } from 'next/server';
+
+export async function POST(request: Request) {
+  try {
+    const { message } = await request.json();
+
+    // Use the exact environment keys you setup earlier
+    const targetUrl = process.env.LANGFLOW_URL || "YOUR_LANGFLOW_API_URL_HERE";
+    const token = process.env.LANGFLOW_TOKEN || "YOUR_LANGFLOW_TOKEN_HERE";
+
+    const response = await fetch(targetUrl, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+        'x-api-key': token
+      },
+      body: JSON.stringify({
+        input_value: message,
+        output_type: 'chat',
+        input_type: 'chat'
+      })
+    });
+
+    const data = await response.json();
+    const cleanText = data?.outputs?.[0]?.outputs?.[0]?.results?.message?.text || "No output returned.";
+    
+    return NextResponse.json({ text: cleanText });
+  } catch (error: any) {
+    return NextResponse.json({ error: error.message }, { status: 500 });
+  }
+}

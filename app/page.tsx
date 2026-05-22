@@ -200,11 +200,11 @@ export default function TalentLink() {
     const draw = () => {
       ctx.clearRect(0, 0, width, height);
       
-      // Let the CSS background show through by rendering a semi-transparent gradient tint overlay
+      // Let the CSS light background layer blend gracefully behind the network layout
       const gradient = ctx.createLinearGradient(0, 0, width, height);
-      gradient.addColorStop(0, 'rgba(241, 245, 249, 0.85)');
-      gradient.addColorStop(0.5, 'rgba(248, 250, 252, 0.88)');
-      gradient.addColorStop(1, 'rgba(226, 232, 240, 0.85)');
+      gradient.addColorStop(0, 'rgba(241, 245, 249, 0.75)');
+      gradient.addColorStop(0.5, 'rgba(255, 255, 255, 0.8)');
+      gradient.addColorStop(1, 'rgba(226, 232, 240, 0.75)');
       ctx.fillStyle = gradient;
       ctx.fillRect(0, 0, width, height);
 
@@ -384,9 +384,10 @@ export default function TalentLink() {
     <div style={{ 
       display: 'flex', height: '100vh', width: '100vw', fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif', 
       margin: 0, color: '#0f172a', overflow: 'hidden', position: 'relative',
-      backgroundImage: "url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=1920&auto=format&fit=crop')",
+      backgroundImage: "url('https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?q=80&w=1920&auto=format&fit=crop')",
       backgroundSize: 'cover',
-      backgroundPosition: 'center'
+      backgroundPosition: 'center',
+      backgroundAttachment: 'fixed'
     }}>
       <canvas ref={canvasRef} style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', zIndex: 0, pointerEvents: 'none' }} />
 
@@ -506,7 +507,7 @@ export default function TalentLink() {
         {/* UPPER STRIP AREA */}
         <div style={{ 
           padding: '16px 20px', borderBottom: '1px solid rgba(15, 23, 42, 0.08)', display: 'flex', alignItems: 'center', 
-          background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0.75) 100%)',
+          background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0.8) 100%)',
           backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)', boxShadow: '0 2px 12px rgba(0, 0, 0, 0.02)', flexShrink: 0
         }}>
           {isMobile && (
@@ -523,7 +524,7 @@ export default function TalentLink() {
               <button onClick={() => setActiveView('dashboard')} style={{ background: 'linear-gradient(135deg, #1e293b 0%, #0f172a 100%)', border: 'none', color: '#ffffff', padding: '6px 14px', borderRadius: '6px', fontSize: '11px', fontWeight: '800', cursor: 'pointer', whiteSpace: 'nowrap' }}>← Hub</button>
             )}
             <div style={{ fontWeight: '900', fontSize: '15px', color: '#0f172a', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-              {activeView === 'dashboard' && '🏢 TALENT-LINK AI OPERATION CENTER'}
+              {activeView === 'dashboard' && '🏢 TALENT-LINK AI OPERATIONAL CENTER'}
               {activeView === 'jd-generation' && '📝 Conversational JD Studio'}
               {activeView === 'match-matrix' && '⚡ Candidate Match Vector'}
             </div>
@@ -609,7 +610,7 @@ export default function TalentLink() {
                 <div key={i} style={{ display: 'flex', justifyContent: m.role === 'user' ? 'flex-end' : 'flex-start', flexShrink: 0 }}>
                   <div style={{ 
                     maxWidth: '85%', padding: '20px', borderRadius: '14px', 
-                    background: m.role === 'user' ? 'linear-gradient(135deg, rgba(248, 250, 252, 0.9) 0%, rgba(241, 245, 249, 0.9) 100%)' : 'linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(250, 250, 250, 0.9) 100%)', 
+                    background: m.role === 'user' ? 'linear-gradient(135deg, rgba(248, 250, 252, 0.95) 0%, rgba(241, 245, 249, 0.95) 100%)' : 'linear-gradient(135deg, rgba(255, 255, 255, 0.98) 0%, rgba(250, 250, 250, 0.98) 100%)', 
                     color: '#0f172a', border: '1px solid rgba(15, 23, 42, 0.08)', boxShadow: '0 8px 32px rgba(15, 23, 42, 0.04)', 
                     backdropFilter: 'blur(8px)', WebkitBackdropFilter: 'blur(8px)', position: 'relative'
                   }}>
@@ -630,8 +631,8 @@ export default function TalentLink() {
               ))}
             </div>
             
-            <form onSubmit={handleSend} style={{ padding: '16px', borderTop: '1px solid rgba(15, 23, 42, 0.06)', display: 'flex', gap: '10px', background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.75) 0%, rgba(255, 255, 255, 0.9) 100%)', backdropFilter: 'blur(12px)', flexShrink: 0 }}>
-              <input type="text" value={input} onChange={(e) => setInput(e.target.value)} placeholder="Provide requirements to engineer JDs..." style={{ flex: 1, padding: '12px 16px', borderRadius: '10px', border: '1px solid rgba(15, 23, 42, 0.12)', backgroundColor: 'rgba(255, 255, 255, 0.8)', color: '#0f172a', outline: 'none', fontSize: '13.5px', fontWeight: '600' }} />
+            <form onSubmit={handleSend} style={{ padding: '16px', borderTop: '1px solid rgba(15, 23, 42, 0.06)', display: 'flex', gap: '10px', background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.8) 0%, rgba(255, 255, 255, 0.95) 100%)', backdropFilter: 'blur(12px)', flexShrink: 0 }}>
+              <input type="text" value={input} onChange={(e) => setInput(e.target.value)} placeholder="Provide requirements to engineer JDs..." style={{ flex: 1, padding: '12px 16px', borderRadius: '10px', border: '1px solid rgba(15, 23, 42, 0.12)', backgroundColor: 'rgba(255, 255, 255, 0.85)', color: '#0f172a', outline: 'none', fontSize: '13.5px', fontWeight: '600' }} />
               <button type="submit" style={{ background: 'linear-gradient(135deg, #22c55e 0%, #16a34a 100%)', border: 'none', padding: '0 20px', borderRadius: '10px', color: '#0f172a', fontWeight: '900', fontSize: '13.5px', cursor: 'pointer' }}>
                 {isLoading ? '...' : 'Send'}
               </button>
@@ -640,7 +641,7 @@ export default function TalentLink() {
         ) : (
           <div style={{ flex: 1, display: 'flex', flexDirection: isMobile ? 'column' : 'row', height: '100%', overflow: 'hidden' }}>
             <div style={{ 
-              width: isMobile ? '100%' : '350px', backgroundColor: 'rgba(248, 250, 252, 0.85)', backdropFilter: 'blur(16px)', WebkitBackdropFilter: 'blur(16px)',
+              width: isMobile ? '100%' : '350px', backgroundColor: 'rgba(248, 250, 252, 0.9)', backdropFilter: 'blur(16px)', WebkitBackdropFilter: 'blur(16px)',
               padding: '20px', display: 'flex', flexDirection: 'column', borderRight: '1px solid rgba(15, 23, 42, 0.08)', borderBottom: isMobile ? '1px solid rgba(15, 23, 42, 0.08)' : 'none', boxSizing: 'border-box', flexShrink: 0
             }}>
               <div>
@@ -654,7 +655,7 @@ export default function TalentLink() {
                 placeholder="Paste corporate job description targets here..." 
                 style={{ 
                   width: '100%', height: isMobile ? '120px' : '200px', padding: '12px', borderRadius: '10px', border: '1px solid rgba(15, 23, 42, 0.1)', 
-                  backgroundColor: 'rgba(255, 255, 255, 0.75)', color: '#0f172a', outline: 'none', resize: 'none', boxSizing: 'border-box', 
+                  backgroundColor: 'rgba(255, 255, 255, 0.85)', color: '#0f172a', outline: 'none', resize: 'none', boxSizing: 'border-box', 
                   fontSize: '13px', lineHeight: '1.5', fontWeight: '600', marginBottom: '12px'
                 }} 
               />
@@ -686,7 +687,7 @@ export default function TalentLink() {
                 Compliance Engine Output Matrix
               </div>
               {currentSession.matchResults.length === 0 ? (
-                <div style={{ padding: '30px', textAlign: 'center', background: 'rgba(255,255,255,0.5)', borderRadius: '12px', border: '1px dashed rgba(15,23,42,0.1)', color: '#64748b', fontSize: '13px', fontWeight: '600' }}>
+                <div style={{ padding: '30px', textAlign: 'center', background: 'rgba(255,255,255,0.6)', borderRadius: '12px', border: '1px dashed rgba(15,23,42,0.1)', color: '#64748b', fontSize: '13px', fontWeight: '600' }}>
                   No vector metrics compiled yet. Submit parameters to load syncing models.
                 </div>
               ) : (

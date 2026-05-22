@@ -70,7 +70,7 @@ export default function TalentLink() {
 
   // Helper utility to turn generated markdown text arrays safely into rich HTML nodes
   const renderFormattedContent = (text: string) => {
-    const cleanText = text.replace(/[\u00A0\u1680 ]/g, ' ');
+    const cleanText = text.replace(/[\u00A0\u1680 ]/g, ' ');
     const lines = cleanText.split('\n');
 
     return lines.map((line, index) => {
@@ -117,15 +117,10 @@ export default function TalentLink() {
 
   // Maps down string segment blocks separating markdown raw emphasis indicators (**text**) to bold blocks
   const parseInlineStyles = (text: string) => {
-    const boldRegex = /\*\*(.*?)\*\//g;
-    const parts = [];
-    let lastIndex = 0;
-    let match;
-
-    // Alternative handling check for normal Markdown patterns split arrays
-    const rawParts = text.split(/\*\*([\s\S]*?)\*\*/g);
-    if (rawParts.length > 1) {
-      return rawParts.map((chunk, i) => {
+    const parts = text.split(/\*\*([\s\S]*?)\*\*/g);
+    
+    if (parts.length > 1) {
+      return parts.map((chunk, i) => {
         if (i % 2 === 1) {
           return <strong key={i} style={{ fontWeight: '700', color: '#0f172a' }}>{chunk}</strong>;
         }

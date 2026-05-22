@@ -348,6 +348,13 @@ export default function TalentLink() {
     }
   };
 
+  const handleResetMatrix = () => {
+    updateCurrentSession({
+      jdInput: '',
+      matchResults: []
+    });
+  };
+
   const copyToClipboard = (text: string, id: number | string) => {
     navigator.clipboard.writeText(text);
     setCopiedId(id);
@@ -647,15 +654,26 @@ export default function TalentLink() {
                 }} 
               />
 
-              <button 
-                onClick={handleMatchCandidates} 
-                style={{ 
-                  width: '100%', background: 'linear-gradient(135deg, #1e293b 0%, #0f172a 100%)', color: '#22c55e', border: '1px solid rgba(255,255,255,0.05)', 
-                  padding: '12px', borderRadius: '10px', fontWeight: '900', fontSize: '13px', cursor: 'pointer', boxShadow: '0 4px 12px rgba(15, 23, 42, 0.15)'
-                }}
-              >
-                {isMatching ? 'Processing Vector Analysis...' : '⚡ Generate Matrix'}
-              </button>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                <button 
+                  onClick={handleMatchCandidates} 
+                  style={{ 
+                    width: '100%', background: 'linear-gradient(135deg, #1e293b 0%, #0f172a 100%)', color: '#22c55e', border: '1px solid rgba(255,255,255,0.05)', 
+                    padding: '12px', borderRadius: '10px', fontWeight: '900', fontSize: '13px', cursor: 'pointer', boxShadow: '0 4px 12px rgba(15, 23, 42, 0.15)'
+                  }}
+                >
+                  {isMatching ? 'Processing Vector Analysis...' : '⚡ Generate Matrix'}
+                </button>
+                <button 
+                  onClick={handleResetMatrix} 
+                  style={{ 
+                    width: '100%', background: 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)', color: '#ffffff', border: 'none', 
+                    padding: '10px', borderRadius: '10px', fontWeight: '800', fontSize: '12px', cursor: 'pointer', boxShadow: '0 4px 12px rgba(239, 68, 68, 0.2)'
+                  }}
+                >
+                  ↺ Reset Matrix
+                </button>
+              </div>
             </div>
 
             <div style={{ flex: 1, padding: '20px', overflowY: 'auto', boxSizing: 'border-box' }}>

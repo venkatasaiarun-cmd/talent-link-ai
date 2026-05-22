@@ -20,7 +20,6 @@ export default function TalentLink() {
   const [copiedId, setCopiedId] = useState<number | string | null>(null);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   
-  // Mobile Responsiveness Tracking State safely initialized
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
 
@@ -69,9 +68,8 @@ export default function TalentLink() {
   const [totalVacancies, setTotalVacancies] = useState<number>(12); 
   const [appliedCandidates, setAppliedCandidates] = useState<number>(48);
 
-  // Helper utility to turn generated markdown into beautiful, clean React layout lines
+  // Helper utility to turn generated markdown text arrays safely into rich HTML nodes
   const renderFormattedContent = (text: string) => {
-    // Clean up rogue special/hidden spaces
     const cleanText = text.replace(/[\u00A0\u1680 ]/g, ' ');
     const lines = cleanText.split('\n');
 
@@ -82,7 +80,7 @@ export default function TalentLink() {
         return <div key={index} style={{ height: '12px' }} />;
       }
 
-      // 1. Render Section Subheaders (### Header)
+      // 1. Parse Subheaders (### Title)
       if (currentLine.startsWith('###')) {
         return (
           <h3 key={index} style={{ fontSize: '16px', fontWeight: '800', color: '#0f172a', marginTop: '18px', marginBottom: '8px' }}>
@@ -91,7 +89,7 @@ export default function TalentLink() {
         );
       }
 
-      // 2. Render List Bullets (- Item)
+      // 2. Parse List Elements (- item)
       if (currentLine.startsWith('-') || currentLine.startsWith('*')) {
         const itemContent = currentLine.replace(/^[-\*]\s*/, '');
         return (
@@ -103,12 +101,12 @@ export default function TalentLink() {
         );
       }
 
-      // 3. Horizontal Separators (---)
+      // 3. Separators (---)
       if (currentLine === '---') {
         return <hr key={index} style={{ border: 'none', borderTop: '1px solid rgba(15,23,42,0.1)', margin: '16px 0' }} />;
       }
 
-      // Default line paragraph wrapper
+      // Standalone paragraph strings
       return (
         <p key={index} style={{ margin: '0 0 8px 0', color: '#334155', fontSize: '13.5px', lineHeight: '1.6' }}>
           {parseInlineStyles(currentLine)}
@@ -117,30 +115,25 @@ export default function TalentLink() {
     });
   };
 
-  // Nested parser to safely switch **Bold text:** tokens to functional bold tags
+  // Maps down string segment blocks separating markdown raw emphasis indicators (**text**) to bold blocks
   const parseInlineStyles = (text: string) => {
-    const boldRegex = /\*\*(.*?)\*\*/g;
+    const boldRegex = /\*\*(.*?)\*\//g;
     const parts = [];
     let lastIndex = 0;
     let match;
 
-    while ((match = boldRegex.exec(text)) !== null) {
-      if (match.index > lastIndex) {
-        parts.push(text.substring(lastIndex, match.index));
-      }
-      parts.push(
-        <strong key={match.index} style={{ fontWeight: '700', color: '#0f172a' }}>
-          {match[1]}
-        </strong>
-      );
-      lastIndex = boldRegex.lastIndex;
+    // Alternative handling check for normal Markdown patterns split arrays
+    const rawParts = text.split(/\*\*([\s\S]*?)\*\*/g);
+    if (rawParts.length > 1) {
+      return rawParts.map((chunk, i) => {
+        if (i % 2 === 1) {
+          return <strong key={i} style={{ fontWeight: '700', color: '#0f172a' }}>{chunk}</strong>;
+        }
+        return chunk;
+      });
     }
 
-    if (lastIndex < text.length) {
-      parts.push(text.substring(lastIndex));
-    }
-
-    return parts.length > 0 ? parts : text;
+    return text;
   };
 
   useEffect(() => {
@@ -565,7 +558,7 @@ export default function TalentLink() {
                 <div style={{ 
                   background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(248, 250, 252, 0.9) 100%)',
                   backdropFilter: 'blur(16px)', borderRadius: '16px', border: '1px solid rgba(255,255,255,0.8)', padding: '24px',
-                  boxShadow: '0 12px 40px rgba(15, 23, 42, 0.06)', display: 'flex', flexDirection: 'column', justifyBetween: 'space-between'
+                  boxShadow: '0 12px 40px rgba(15, 23, 42, 0.06)', display: 'flex', flexDirection: 'column', justifyContent: 'space-between'
                 }}>
                   <div>
                     <span style={{ fontSize: '24px', display: 'block', marginBottom: '12px' }}>📝</span>
@@ -585,7 +578,7 @@ export default function TalentLink() {
                 <div style={{ 
                   background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(248, 250, 252, 0.9) 100%)',
                   backdropFilter: 'blur(16px)', borderRadius: '16px', border: '1px solid rgba(255,255,255,0.8)', padding: '24px',
-                  boxShadow: '0 12px 40px rgba(15, 23, 42, 0.06)', display: 'flex', flexDirection: 'column', justifyBetween: 'space-between'
+                  boxShadow: '0 12px 40px rgba(15, 23, 42, 0.06)', display: 'flex', flexDirection: 'column', justifyContent: 'space-between'
                 }}>
                   <div>
                     <span style={{ fontSize: '24px', display: 'block', marginBottom: '12px' }}>⚡</span>
@@ -627,7 +620,6 @@ export default function TalentLink() {
                       </button>
                     </div>
                     
-                    {/* Rendered dynamic rich text formatting helper instead of a raw un-parsed string block */}
                     <div style={{ paddingBottom: m.role === 'assistant' ? '40px' : '0px' }}>
                       {renderFormattedContent(m.content)}
                     </div>

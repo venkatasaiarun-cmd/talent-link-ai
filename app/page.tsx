@@ -575,7 +575,7 @@ export default function TalentLink() {
                   }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px', gap: '20px' }}>
                       <div style={{ fontSize: '11px', textTransform: 'uppercase', letterSpacing: '1px', color: m.role === 'user' ? '#16a34a' : '#475569', fontWeight: '900' }}>
-                        {m.role === 'user' ? 'Operator Query' : 'Nexus AI'}
+                        {m.role === 'user' ? 'Operator Query' : 'Talent-Link AI'}
                       </div>
                       <button onClick={() => copyToClipboard(m.content, `top-${i}`)} style={{ background: 'transparent', border: 'none', color: '#64748b', fontSize: '11px', cursor: 'pointer', fontWeight: '800' }}>
                         {copiedId === `top-${i}` ? '✓' : '📋'}

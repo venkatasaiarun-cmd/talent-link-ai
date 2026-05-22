@@ -199,10 +199,12 @@ export default function TalentLink() {
 
     const draw = () => {
       ctx.clearRect(0, 0, width, height);
+      
+      // Let the CSS background show through by rendering a semi-transparent gradient tint overlay
       const gradient = ctx.createLinearGradient(0, 0, width, height);
-      gradient.addColorStop(0, '#f1f5f9');
-      gradient.addColorStop(0.5, '#f8fafc');
-      gradient.addColorStop(1, '#e2e8f0');
+      gradient.addColorStop(0, 'rgba(241, 245, 249, 0.85)');
+      gradient.addColorStop(0.5, 'rgba(248, 250, 252, 0.88)');
+      gradient.addColorStop(1, 'rgba(226, 232, 240, 0.85)');
       ctx.fillStyle = gradient;
       ctx.fillRect(0, 0, width, height);
 
@@ -381,7 +383,10 @@ export default function TalentLink() {
   return (
     <div style={{ 
       display: 'flex', height: '100vh', width: '100vw', fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif', 
-      margin: 0, backgroundColor: 'transparent', color: '#0f172a', overflow: 'hidden', position: 'relative'
+      margin: 0, color: '#0f172a', overflow: 'hidden', position: 'relative',
+      backgroundImage: "url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=1920&auto=format&fit=crop')",
+      backgroundSize: 'cover',
+      backgroundPosition: 'center'
     }}>
       <canvas ref={canvasRef} style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', zIndex: 0, pointerEvents: 'none' }} />
 
@@ -518,7 +523,7 @@ export default function TalentLink() {
               <button onClick={() => setActiveView('dashboard')} style={{ background: 'linear-gradient(135deg, #1e293b 0%, #0f172a 100%)', border: 'none', color: '#ffffff', padding: '6px 14px', borderRadius: '6px', fontSize: '11px', fontWeight: '800', cursor: 'pointer', whiteSpace: 'nowrap' }}>← Hub</button>
             )}
             <div style={{ fontWeight: '900', fontSize: '15px', color: '#0f172a', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-              {activeView === 'dashboard' && '🏢 Operational Control Center'}
+              {activeView === 'dashboard' && '🏢 TALENT-LINK AI OPERATION CENTER'}
               {activeView === 'jd-generation' && '📝 Conversational JD Studio'}
               {activeView === 'match-matrix' && '⚡ Candidate Match Vector'}
             </div>

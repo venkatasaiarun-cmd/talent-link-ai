@@ -64,10 +64,10 @@ export default function TalentLink() {
   const [isMatching, setIsMatching] = useState(false);
 
   // Dynamic Database Counter States
-  const [totalVacancies, setTotalVacancies] = useState<number>(14); 
-  const [appliedCandidates, setAppliedCandidates] = useState<number>(52);
+  const [totalVacancies, setTotalVacancies] = useState<number>(12); 
+  const [appliedCandidates, setAppliedCandidates] = useState<number>(48);
 
-  // Interactive Glass Background engine
+  // Global style injection for glassy visual properties and thin custom scrollbars
   useEffect(() => {
     setMounted(true);
     
@@ -79,7 +79,7 @@ export default function TalentLink() {
         height: 100% !important;
         width: 100% !important;
         overflow: hidden !important;
-        background-color: #0f172a;
+        background-color: #f8fafc;
       }
       ::-webkit-scrollbar {
         width: 6px;
@@ -88,11 +88,11 @@ export default function TalentLink() {
         background: transparent;
       }
       ::-webkit-scrollbar-thumb {
-        background: rgba(255, 255, 255, 0.1);
+        background: rgba(15, 23, 42, 0.15);
         border-radius: 10px;
       }
       ::-webkit-scrollbar-thumb:hover {
-        background: rgba(255, 255, 255, 0.2);
+        background: rgba(15, 23, 42, 0.3);
       }
     `;
     document.head.appendChild(style);
@@ -124,15 +124,15 @@ export default function TalentLink() {
     }
 
     const items: NexusItem[] = [];
-    const totalItems = 35;
+    const totalItems = 30;
 
     for (let i = 0; i < totalItems; i++) {
       items.push({
         x: Math.random() * width,
         y: Math.random() * height,
-        vx: (Math.random() - 0.5) * 0.15, 
-        vy: (Math.random() - 0.5) * 0.15,
-        radius: Math.random() * 2 + 1.5,
+        vx: (Math.random() - 0.5) * 0.25, 
+        vy: (Math.random() - 0.5) * 0.25,
+        radius: Math.random() * 2 + 2,
         type: i % 2
       });
     }
@@ -141,22 +141,22 @@ export default function TalentLink() {
       ctx.clearRect(0, 0, width, height);
       
       const gradient = ctx.createLinearGradient(0, 0, width, height);
-      gradient.addColorStop(0, '#0f172a');
-      gradient.addColorStop(0.5, '#1e293b');
-      gradient.addColorStop(1, '#020617');
+      gradient.addColorStop(0, '#f1f5f9');
+      gradient.addColorStop(0.5, '#f8fafc');
+      gradient.addColorStop(1, '#e2e8f0');
       ctx.fillStyle = gradient;
       ctx.fillRect(0, 0, width, height);
 
       for (let i = 0; i < items.length; i++) {
         for (let j = i + 1; j < items.length; j++) {
-          const dist = Math.hypot(items[i].x - items[j].x, items[i].y - items[j].y);
-          if (dist < 220) {
+          const dist = Math.hypot(items[i].x - items[j].x, items[j].y - items[j].y);
+          if (dist < 200) {
             ctx.beginPath();
             ctx.moveTo(items[i].x, items[i].y);
             ctx.lineTo(items[j].x, items[j].y);
-            const alpha = (1 - dist / 220) * 0.08;
-            ctx.strokeStyle = `rgba(34, 197, 94, ${alpha})`; 
-            ctx.lineWidth = 0.6;
+            const alpha = (1 - dist / 200) * 0.15;
+            ctx.strokeStyle = `rgba(30, 41, 59, ${alpha})`; 
+            ctx.lineWidth = 0.8;
             ctx.stroke();
           }
         }
@@ -171,10 +171,13 @@ export default function TalentLink() {
         if (item.y < 0) item.y = height;
         if (item.y > height) item.y = 0;
 
+        ctx.save();
+        ctx.translate(item.x, item.y);
         ctx.beginPath();
-        ctx.arc(item.x, item.y, item.radius, 0, Math.PI * 2);
-        ctx.fillStyle = item.type === 0 ? 'rgba(255, 255, 255, 0.15)' : 'rgba(34, 197, 94, 0.3)';
+        ctx.arc(0, 0, item.type === 0 ? item.radius : item.radius + 1, 0, Math.PI * 2);
+        ctx.fillStyle = item.type === 0 ? 'rgba(15, 23, 42, 0.25)' : 'rgba(34, 197, 94, 0.45)';
         ctx.fill();
+        ctx.restore();
       });
 
       animationFrameId = requestAnimationFrame(draw);
@@ -189,16 +192,26 @@ export default function TalentLink() {
     };
   }, []);
 
-  // Sync metrics changes
+  // Sync metrics counters dynamically based on state changes
   useEffect(() => {
     const activeJdsCount = sessions.filter(s => s.jdInput.trim().length > 0).length;
-    setTotalVacancies(12 + activeJdsCount);
-    setAppliedCandidates(45 + (activeJdsCount * 4));
+    setTotalVacancies(10 + activeJdsCount);
+    setAppliedCandidates(35 + (activeJdsCount * 3));
   }, [sessions]);
 
   const updateCurrentSession = (updatedFields: Partial<ChatSession>) => {
     const currentId = activeView === 'jd-generation' ? activeJdId : activeMatrixId;
     setSessions(prev => prev.map(s => s.id === currentId ? { ...s, ...updatedFields } : s));
+  };
+
+  // Dynamic Context Topic Extraction for Chat Name Generation Based on Conversation
+  const extractTopicTitle = (text: string): string => {
+    const cleanText = text.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g, "").trim();
+    const words = cleanText.split(/\s+/).filter(word => word.length > 2);
+    if (words.length === 0) return 'General Node Session';
+    const formattedWords = words.map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase());
+    if (formattedWords.length <= 3) return formattedWords.join(' ');
+    return formattedWords.slice(0, 3).join(' ') + ' Suite';
   };
 
   const handleNewSession = () => {
@@ -207,9 +220,9 @@ export default function TalentLink() {
     const newSession: ChatSession = {
       id: newId,
       type: activeView as 'jd-generation' | 'match-matrix',
-      title: activeView === 'jd-generation' ? 'New JD Suite' : 'New Matrix Sync',
+      title: activeView === 'jd-generation' ? 'Pending JD Configuration' : 'Unmapped Analysis Matrix',
       messages: [
-        { role: 'assistant', content: `New ${activeView === 'jd-generation' ? 'JD Generation' : 'Candidate Matching'} node established.` }
+        { role: 'assistant', content: `New standalone node initialized. Enter requirements to build out this context workspace.` }
       ],
       matchResults: [],
       jdInput: ''
@@ -226,7 +239,14 @@ export default function TalentLink() {
     const userMsg: Message = { role: 'user', content: input };
     const updatedMessages = [...currentSession.messages, userMsg];
     
-    updateCurrentSession({ messages: updatedMessages });
+    // Dynamic naming strategy based on message conversation text
+    let updatedTitle = currentSession.title;
+    const activeHistoryCount = currentSession.messages.filter(m => m.role === 'user').length;
+    if (activeHistoryCount === 0) {
+      updatedTitle = extractTopicTitle(input);
+    }
+
+    updateCurrentSession({ messages: updatedMessages, title: updatedTitle });
     setInput('');
     setIsLoading(true);
 
@@ -238,11 +258,11 @@ export default function TalentLink() {
       });
       const data = await response.json();
       updateCurrentSession({ 
-        messages: [...updatedMessages, { role: 'assistant', content: data.text || "No response metric returned from node system." }] 
+        messages: [...updatedMessages, { role: 'assistant', content: data.text || "No responses found on target vector link." }] 
       });
     } catch (error) {
       updateCurrentSession({ 
-        messages: [...updatedMessages, { role: 'assistant', content: "Gateway connectivity timeout error." }] 
+        messages: [...updatedMessages, { role: 'assistant', content: "Gateway connectivity timeout exception." }] 
       });
     } finally {
       setIsLoading(false);
@@ -257,15 +277,15 @@ export default function TalentLink() {
       const response = await fetch('/api/langflow', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message: `Rank top 3 matching candidates from the vector pool for: ${currentSession.jdInput}` })
+        body: JSON.stringify({ message: `Rank top 3 matching candidates from the database pool based strictly on criteria: ${currentSession.jdInput}` })
       });
       const data = await response.json();
       updateCurrentSession({
-        matchResults: [{ title: "Sync matrix resolved", details: data.text || "Matches structured safely." }]
+        matchResults: [{ title: "Analysis Matrix Complete", details: data.text || "Successfully sorted target candidate parameters." }]
       });
     } catch (error) {
       updateCurrentSession({
-        matchResults: [{ title: "System Flag", details: "Unable to complete database matching matrix parsing loop." }]
+        matchResults: [{ title: "System Alert", details: "Unable to reconcile context vector matrix loops safely." }]
       });
     } finally {
       setIsMatching(false);
@@ -279,8 +299,29 @@ export default function TalentLink() {
   };
 
   if (!mounted) {
-    return <div style={{ minHeight: '100vh', backgroundColor: '#0f172a' }} />;
+    return <div style={{ minHeight: '100vh', backgroundColor: '#f8fafc' }} />;
   }
+
+  // GLOBAL SYSTEM SVG LOGO ELEMENT COMPONENT
+  const TalentLinkLogo = () => (
+    <div style={{ 
+      width: '52px', 
+      height: '52px', 
+      backgroundColor: '#22c55e', 
+      borderRadius: '14px', 
+      padding: '8px', 
+      boxSizing: 'border-box',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      boxShadow: '0 0 20px rgba(34, 197, 94, 0.4), inset 0 -4px 8px rgba(0,0,0,0.2)'
+    }}>
+      <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ width: '100%', height: '100%' }}>
+        <circle cx="50" cy="50" r="40" stroke="#0f172a" strokeWidth="10"/>
+        <path d="M35 50 L45 60 L65 40" stroke="#0f172a" strokeWidth="10" strokeLinecap="round" strokeLinejoin="round"/>
+      </svg>
+    </div>
+  );
 
   return (
     <div style={{ 
@@ -290,55 +331,46 @@ export default function TalentLink() {
       fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif', 
       margin: 0, 
       backgroundColor: 'transparent',
-      color: '#ffffff',
+      color: '#0f172a',
       overflow: 'hidden', 
       position: 'relative'
     }}>
       <canvas ref={canvasRef} style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', zIndex: 0, pointerEvents: 'none' }} />
 
-      {/* GLOBAL GLOSSY NAVIGATION SIDEBAR */}
+      {/* LEFT SIDEBAR (Vibrant Slate Gloss Layer) */}
       <div style={{ 
-        width: '280px', 
-        backgroundColor: 'rgba(15, 23, 42, 0.75)', 
-        backdropFilter: 'blur(20px)',
-        borderRight: '1px solid rgba(255, 255, 255, 0.08)', 
+        width: '300px', 
+        backgroundColor: 'rgba(15, 23, 42, 0.92)', 
+        backdropFilter: 'blur(16px)',
+        WebkitBackdropFilter: 'blur(16px)',
+        padding: '24px 16px', 
         display: 'flex', 
         flexDirection: 'column', 
+        borderRight: '1px solid rgba(255, 255, 255, 0.1)', 
         justifyContent: 'space-between',
         height: '100%',
-        padding: '24px 16px',
         boxSizing: 'border-box',
+        boxShadow: '4px 0 24px rgba(15, 23, 42, 0.15)',
         zIndex: 2
       }}>
         <div style={{ display: 'flex', flexDirection: 'column', height: 'calc(100% - 140px)', overflow: 'hidden' }}>
           
-          {/* APP BRAND HEADER */}
-          <div onClick={() => setActiveView('dashboard')} style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '32px', cursor: 'pointer' }}>
-            <div style={{ 
-              width: '40px', height: '40px', backgroundColor: '#22c55e', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center',
-              boxShadow: '0 0 15px rgba(34, 197, 94, 0.4)'
-            }}>
-              <svg viewBox="0 0 100 100" fill="none" style={{ width: '60%', height: '60%' }}>
-                <circle cx="50" cy="50" r="40" stroke="#0f172a" strokeWidth="12"/>
-                <path d="M35 50 L45 60 L65 40" stroke="#0f172a" strokeWidth="12" strokeLinecap="round" strokeLinejoin="round"/>
-              </svg>
-            </div>
-            <div>
-              <h1 style={{ fontSize: '16px', margin: '0', fontWeight: '900', letterSpacing: '1px' }}>TALENT-LINK</h1>
-              <span style={{ fontSize: '10px', color: '#22c55e', fontWeight: '700' }}>Enterprise Suite</span>
-            </div>
+          {/* CORE HEADER BRAND BLOCK LOGO INTEGRATION */}
+          <div onClick={() => setActiveView('dashboard')} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginBottom: '28px', textAlign: 'center', flexShrink: 0, cursor: 'pointer' }}>
+            <TalentLinkLogo />
+            <h1 style={{ fontSize: '19px', margin: '10px 0 0 0', fontWeight: '900', letterSpacing: '1.5px', color: '#ffffff', textShadow: '0 2px 4px rgba(0,0,0,0.3)' }}>TALENT-LINK</h1>
+            <span style={{ fontSize: '11px', color: '#22c55e', marginTop: '4px', fontWeight: '800', letterSpacing: '0.5px' }}>Connect. Hire. Grow.</span>
           </div>
 
-          {/* MAIN MODULE ROUTER INDEX */}
-          <span style={{ fontSize: '10px', color: '#64748b', fontWeight: '800', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '10px', paddingLeft: '4px' }}>Workspaces</span>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', marginBottom: '24px' }}>
+          {/* MAIN APPLICATION CONSOLE SECTIONS */}
+          <span style={{ fontSize: '11px', color: '#94a3b8', fontWeight: '800', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '8px', paddingLeft: '6px' }}>Workspaces</span>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', marginBottom: '24px', flexShrink: 0 }}>
             <button 
               onClick={() => setActiveView('dashboard')}
               style={{
                 width: '100%', padding: '12px', textAlign: 'left', borderRadius: '8px', border: 'none', fontSize: '13px', fontWeight: '700', cursor: 'pointer',
                 background: activeView === 'dashboard' ? 'rgba(255,255,255,0.08)' : 'transparent',
-                color: activeView === 'dashboard' ? '#22c55e' : '#94a3b8',
-                transition: 'all 0.1s'
+                color: activeView === 'dashboard' ? '#22c55e' : '#e2e8f0'
               }}
             >
               📊 Core Control Dashboard
@@ -348,8 +380,7 @@ export default function TalentLink() {
               style={{
                 width: '100%', padding: '12px', textAlign: 'left', borderRadius: '8px', border: 'none', fontSize: '13px', fontWeight: '700', cursor: 'pointer',
                 background: activeView === 'jd-generation' ? 'rgba(255,255,255,0.08)' : 'transparent',
-                color: activeView === 'jd-generation' ? '#22c55e' : '#94a3b8',
-                transition: 'all 0.1s'
+                color: activeView === 'jd-generation' ? '#22c55e' : '#e2e8f0'
               }}
             >
               📝 Conversational JD AI
@@ -359,37 +390,41 @@ export default function TalentLink() {
               style={{
                 width: '100%', padding: '12px', textAlign: 'left', borderRadius: '8px', border: 'none', fontSize: '13px', fontWeight: '700', cursor: 'pointer',
                 background: activeView === 'match-matrix' ? 'rgba(255,255,255,0.08)' : 'transparent',
-                color: activeView === 'match-matrix' ? '#22c55e' : '#94a3b8',
-                transition: 'all 0.1s'
+                color: activeView === 'match-matrix' ? '#22c55e' : '#e2e8f0'
               }}
             >
               ⚡ Candidate Match Matrix
             </button>
           </div>
 
-          {/* CHAT SESSION HISTORY INDEX (Only shows up inside active workspace views) */}
+          {/* CHAT CHRONOLOGY INDEX FLOW */}
           {activeView !== 'dashboard' && (
             <>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px', padding: '0 4px' }}>
-                <span style={{ fontSize: '10px', color: '#64748b', fontWeight: '800', textTransform: 'uppercase', letterSpacing: '1px' }}>Active Nodes</span>
-                <button onClick={handleNewSession} style={{ background: 'transparent', border: 'none', color: '#22c55e', fontWeight: '800', fontSize: '11px', cursor: 'pointer' }}>+ New</button>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px', padding: '0 6px' }}>
+                <span style={{ fontSize: '11px', color: '#94a3b8', fontWeight: '800', textTransform: 'uppercase', letterSpacing: '1px' }}>Active Nodes History</span>
+                <button onClick={handleNewSession} style={{ background: 'transparent', border: 'none', color: '#22c55e', fontWeight: '900', fontSize: '12px', cursor: 'pointer' }}>+ New</button>
               </div>
-              <div style={{ flex: 1, overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '4px' }}>
+              <div style={{ flex: 1, overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '6px' }}>
                 {sessions.filter(s => s.type === activeView).map((session) => {
                   const isActive = (activeView === 'jd-generation' && session.id === activeJdId) || (activeView === 'match-matrix' && session.id === activeMatrixId);
                   return (
                     <div 
-                      key={session.id}
+                      key={session.id} 
                       onClick={() => activeView === 'jd-generation' ? setActiveJdId(session.id) : setActiveMatrixId(session.id)}
-                      style={{
-                        padding: '10px 12px', borderRadius: '6px', fontSize: '12.5px', fontWeight: '600', cursor: 'pointer',
-                        background: isActive ? 'rgba(34, 197, 94, 0.15)' : 'transparent',
-                        color: isActive ? '#ffffff' : '#94a3b8',
-                        borderLeft: isActive ? '3px solid #22c55e' : '3px solid transparent',
-                        whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis'
+                      style={{ 
+                        padding: '12px', 
+                        background: isActive ? 'linear-gradient(135deg, rgba(34, 197, 94, 0.95) 0%, rgba(22, 163, 74, 0.95) 100%)' : 'transparent', 
+                        borderLeft: isActive ? '4px solid #ffffff' : '4px solid transparent', 
+                        color: isActive ? '#0f172a' : '#e2e8f0', 
+                        borderRadius: '0 8px 8px 0', 
+                        fontSize: '13px', 
+                        fontWeight: isActive ? '900' : '600', 
+                        cursor: 'pointer',
+                        whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis',
+                        boxShadow: isActive ? '0 4px 12px rgba(22, 163, 74, 0.2)' : 'none'
                       }}
                     >
-                      🔮 {session.title}
+                      💬 {session.title}
                     </div>
                   );
                 })}
@@ -398,98 +433,104 @@ export default function TalentLink() {
           )}
         </div>
 
-        {/* BOTTOM UTILITY MATRIX TERMINAL */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-          <div style={{ display: 'flex', gap: '6px' }}>
-            <button onClick={() => setIsAboutOpen(true)} style={{ flex: 1, padding: '9px', background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '6px', color: '#cbd5e1', fontSize: '11px', fontWeight: '700', cursor: 'pointer' }}>About Talent-Link</button>
-            <button onClick={() => setIsContactOpen(true)} style={{ flex: 0.8, padding: '9px', background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '6px', color: '#cbd5e1', fontSize: '11px', fontWeight: '700', cursor: 'pointer' }}>Contact</button>
+        {/* BOTTOM GLOBAL MODAL ACTIONS CONTAINER */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', flexShrink: 0 }}>
+          <div style={{ display: 'flex', gap: '8px' }}>
+            <button onClick={() => setIsAboutOpen(true)} style={{ flex: 1.3, padding: '10px', background: 'linear-gradient(180deg, rgba(51, 65, 85, 0.6) 0%, rgba(30, 41, 59, 0.8) 100%)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '8px', color: '#ffffff', fontSize: '11px', fontWeight: '700', cursor: 'pointer' }}>About Talent-Link</button>
+            <button onClick={() => setIsContactOpen(true)} style={{ flex: 0.7, padding: '10px', background: 'linear-gradient(180deg, rgba(51, 65, 85, 0.6) 0%, rgba(30, 41, 59, 0.8) 100%)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '8px', color: '#ffffff', fontSize: '11px', fontWeight: '700', cursor: 'pointer' }}>Contact</button>
           </div>
-          <div style={{ padding: '10px', background: 'rgba(34,197,94,0.04)', border: '1px solid rgba(34,197,94,0.1)', borderRadius: '8px', display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <div style={{ width: '8px', height: '8px', backgroundColor: '#22c55e', borderRadius: '50%', boxShadow: '0 0 8px #22c55e' }} />
-            <span style={{ fontSize: '11px', color: '#a7f3d0', fontWeight: '700' }}>Cloud Synced Operational</span>
+          <div style={{ padding: '12px', background: 'rgba(30, 41, 59, 0.5)', border: '1px solid rgba(255,255,255,0.05)', borderRadius: '8px', display: 'flex', alignItems: 'center', gap: '10px' }}>
+            <div style={{ width: '10px', height: '10px', backgroundColor: '#22c55e', borderRadius: '50%', boxShadow: '0 0 10px #22c55e' }}></div>
+            <div style={{ display: 'flex', flexDirection: 'column' }}>
+              <span style={{ fontSize: '11px', fontWeight: '800', color: '#ffffff' }}>Vector Precision</span>
+              <span style={{ fontSize: '10px', color: '#22c55e', fontWeight: '700' }}>98.7% Operational</span>
+            </div>
           </div>
         </div>
       </div>
 
-      {/* CORE WORKSPACE FRAME CONTAINER */}
-      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', height: '100%', position: 'relative', zIndex: 1 }}>
+      {/* CENTER WORKSPACE FRAME TERMINAL HUB */}
+      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', height: '100%', backgroundColor: 'transparent', position: 'relative', zIndex: 1 }}>
         
-        {/* TOP STATUS HEADER STRIP */}
+        {/* UPPER GLASS STRIP BAR AREA */}
         <div style={{ 
-          padding: '18px 30px', borderBottom: '1px solid rgba(255,255,255,0.05)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', 
-          background: 'rgba(15, 23, 42, 0.4)', backdropFilter: 'blur(10px)', flexShrink: 0
+          padding: '20px 30px', 
+          borderBottom: '1px solid rgba(15, 23, 42, 0.08)', 
+          display: 'flex', 
+          justifyContent: 'space-between', 
+          alignItems: 'center', 
+          background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0.75) 100%)',
+          backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)',
+          boxShadow: '0 2px 12px rgba(0, 0, 0, 0.02)', flexShrink: 0
         }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
             {activeView !== 'dashboard' && (
-              <button onClick={() => setActiveView('dashboard')} style={{ background: 'rgba(255,255,255,0.05)', border: 'none', color: '#ffffff', padding: '6px 12px', borderRadius: '6px', fontSize: '11px', fontWeight: '700', cursor: 'pointer' }}>← Back to Hub</button>
+              <button onClick={() => setActiveView('dashboard')} style={{ background: 'linear-gradient(135deg, #1e293b 0%, #0f172a 100%)', border: 'none', color: '#ffffff', padding: '6px 14px', borderRadius: '6px', fontSize: '11px', fontWeight: '800', cursor: 'pointer' }}>← Back to Hub</button>
             )}
-            <span style={{ fontWeight: '800', fontSize: '14.5px', color: '#f8fafc' }}>
-              {activeView === 'dashboard' && '🏢 System Operational Control Matrix'}
-              {activeView === 'jd-generation' && '📝 Workspace Studio: Conversational JDs'}
-              {activeView === 'match-matrix' && '⚡ Workspace Studio: Candidate Match Processing Engine'}
-            </span>
+            <div style={{ fontWeight: '900', fontSize: '16px', color: '#0f172a' }}>
+              {activeView === 'dashboard' && '🏢 System Operational Control Dashboard'}
+              {activeView === 'jd-generation' && '📝 Workspace Studio: Conversational JD Generation'}
+              {activeView === 'match-matrix' && '⚡ Workspace Engine: Candidate Match Matrix Processing'}
+            </div>
           </div>
           
-          {/* REAL-TIME PIPELINE LIVE COUNTERS */}
-          <div style={{ display: 'flex', gap: '12px', fontSize: '12px' }}>
-            <span style={{ background: 'rgba(255,255,255,0.05)', padding: '5px 12px', borderRadius: '6px', border: '1px solid rgba(255,255,255,0.04)', color: '#94a3b8' }}>Vacancies Tracked: <strong style={{ color: '#ffffff' }}>{totalVacancies}</strong></span>
-            <span style={{ background: 'rgba(34, 197, 94, 0.1)', padding: '5px 12px', borderRadius: '6px', border: '1px solid rgba(34, 197, 94, 0.15)', color: '#4ade80' }}>Candidates Indexed: <strong style={{ color: '#ffffff' }}>{appliedCandidates}</strong></span>
+          <div style={{ display: 'flex', gap: '16px', fontSize: '13px', color: '#334155', fontWeight: '700' }}>
+            <span style={{ background: 'rgba(15, 23, 42, 0.05)', padding: '4px 10px', borderRadius: '6px' }}>No. of Vacancies: <strong style={{ color: '#0f172a' }}>{totalVacancies}</strong></span>
+            <span style={{ background: 'rgba(34, 197, 94, 0.1)', padding: '4px 10px', borderRadius: '6px', color: '#15803d' }}>Applied Candidates: <strong>{appliedCandidates}</strong></span>
           </div>
         </div>
 
-        {/* CONDITIONALLY RENDER VIEW WORKSPACES */}
+        {/* WORKSPACE CENTRAL ROUTER VIEWS */}
         {activeView === 'dashboard' ? (
           
-          /* VIEW 1: THE ENTERPRISE DASHBOARD PORTAL HUB */
-          <div style={{ flex: 1, padding: '50px 40px', overflowY: 'auto', boxSizing: 'border-box' }}>
-            <div style={{ maxWidth: '900px', margin: '0 auto' }}>
-              <div style={{ marginBottom: '36px' }}>
-                <h2 style={{ fontSize: '28px', fontWeight: '900', margin: '0 0 8px 0', letterSpacing: '-0.5px' }}>Welcome back to Talent-Link Workspace</h2>
-                <p style={{ color: '#94a3b8', margin: 0, fontSize: '15px', fontWeight: '500' }}>Select an active orchestration terminal below to start managing your talent pipelines.</p>
+          /* OPTION A: RE-STRUCTURED DASHBOARD HUB HOMEPAGE */
+          <div style={{ flex: 1, padding: '60px 40px', overflowY: 'auto', boxSizing: 'border-box' }}>
+            <div style={{ maxWidth: '950px', margin: '0 auto' }}>
+              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', marginBottom: '40px' }}>
+                <TalentLinkLogo />
+                <h2 style={{ fontSize: '28px', fontWeight: '900', margin: '14px 0 6px 0', color: '#0f172a', letterSpacing: '-0.5px' }}>Welcome back to Talent-Link Workspace</h2>
+                <p style={{ color: '#475569', margin: 0, fontSize: '15px', fontWeight: '600' }}>Select an active architecture console link below to manage pipeline frameworks.</p>
               </div>
 
-              {/* CARD DECK CONTAINER */}
-              <div style={{ display: 'grid', gridTemplateColumns: '1.0fr 1.0fr', gap: '24px' }}>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '30px' }}>
                 
-                {/* CARD 1: CONVERSATIONAL JD GENERATION */}
+                {/* STUDIO MATRIX CARD A: JD GENERATION CO-PILOT */}
                 <div style={{ 
-                  background: 'linear-gradient(135deg, rgba(30, 41, 59, 0.7) 0%, rgba(15, 23, 42, 0.85) 100%)',
-                  backdropFilter: 'blur(16px)', borderRadius: '16px', border: '1px solid rgba(255,255,255,0.08)', padding: '32px',
-                  boxShadow: '0 12px 40px rgba(0,0,0,0.25)', display: 'flex', flexDirection: 'column', justifyContent: 'space-between'
+                  background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(248, 250, 252, 0.9) 100%)',
+                  backdropFilter: 'blur(16px)', borderRadius: '16px', border: '1px solid rgba(255,255,255,0.8)', padding: '32px',
+                  boxShadow: '0 12px 40px rgba(15, 23, 42, 0.06)', display: 'flex', flexDirection: 'column', justifyContent: 'space-between'
                 }}>
                   <div>
-                    <div style={{ width: '45px', height: '45px', borderRadius: '10px', backgroundColor: 'rgba(34,197,94,0.1)', border: '1px solid rgba(34,197,94,0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '20px', fontSize: '20px' }}>📝</div>
-                    <h3 style={{ fontSize: '18px', fontWeight: '800', margin: '0 0 10px 0', color: '#ffffff' }}>Conversational Talent-Link AI</h3>
-                    <p style={{ color: '#94a3b8', fontSize: '13.5px', lineHeight: '1.6', margin: '0 0 24px 0', fontWeight: '500' }}>
-                      Collaborate with a context-aware AI architecture to generate tailored, precise, and industry-optimized job descriptions ready to map straight to your applicant pipeline.
+                    <span style={{ fontSize: '24px', display: 'block', marginBottom: '16px' }}>📝</span>
+                    <h3 style={{ fontSize: '18px', fontWeight: '900', margin: '0 0 10px 0', color: '#0f172a' }}>Conversational Talent-Link AI</h3>
+                    <p style={{ color: '#475569', fontSize: '13.5px', lineHeight: '1.6', margin: '0 0 24px 0', fontWeight: '600' }}>
+                      Collaborate with context-aware natural language interfaces to design optimized, compliance-mapped corporate job descriptions ready for candidate parsing.
                     </p>
                   </div>
                   <button 
                     onClick={() => setActiveView('jd-generation')}
-                    style={{ background: '#22c55e', color: '#0f172a', border: 'none', width: '100%', padding: '12px', borderRadius: '8px', fontWeight: '800', fontSize: '13.5px', cursor: 'pointer', boxShadow: '0 4px 14px rgba(34,197,94,0.3)', transition: 'opacity 0.1s' }}
-                    onMouseEnter={(e) => e.currentTarget.style.opacity = '0.9'} onMouseLeave={(e) => e.currentTarget.style.opacity = '1'}
+                    style={{ background: 'linear-gradient(135deg, #22c55e 0%, #16a34a 100%)', color: '#0f172a', border: 'none', width: '100%', padding: '13px', borderRadius: '10px', fontWeight: '900', fontSize: '13.5px', cursor: 'pointer', boxShadow: '0 4px 14px rgba(34, 197, 94, 0.35)' }}
                   >
                     Open JD Studio Console →
                   </button>
                 </div>
 
-                {/* CARD 2: CANDIDATE MATCHING VECTOR SYNC MATRIX */}
+                {/* STUDIO MATRIX CARD B: MATRIX VECTOR ALIGNER */}
                 <div style={{ 
-                  background: 'linear-gradient(135deg, rgba(30, 41, 59, 0.7) 0%, rgba(15, 23, 42, 0.85) 100%)',
-                  backdropFilter: 'blur(16px)', borderRadius: '16px', border: '1px solid rgba(255,255,255,0.08)', padding: '32px',
-                  boxShadow: '0 12px 40px rgba(0,0,0,0.25)', display: 'flex', flexDirection: 'column', justifyContent: 'space-between'
+                  background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(248, 250, 252, 0.9) 100%)',
+                  backdropFilter: 'blur(16px)', borderRadius: '16px', border: '1px solid rgba(255,255,255,0.8)', padding: '32px',
+                  boxShadow: '0 12px 40px rgba(15, 23, 42, 0.06)', display: 'flex', flexDirection: 'column', justifyContent: 'space-between'
                 }}>
                   <div>
-                    <div style={{ width: '45px', height: '45px', borderRadius: '10px', backgroundColor: 'rgba(34,197,94,0.1)', border: '1px solid rgba(34,197,94,0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '20px', fontSize: '20px' }}>⚡</div>
-                    <h3 style={{ fontSize: '18px', fontWeight: '800', margin: '0 0 10px 0', color: '#ffffff' }}>Candidate Match Matrix</h3>
-                    <p style={{ color: '#94a3b8', fontSize: '13.5px', lineHeight: '1.6', margin: '0 0 24px 0', fontWeight: '500' }}>
-                      Execute vector semantic scoring pipelines. Cross-reference database resumes instantly against target requirements parameters to generate ranked matrices.
+                    <span style={{ fontSize: '24px', display: 'block', marginBottom: '16px' }}>⚡</span>
+                    <h3 style={{ fontSize: '18px', fontWeight: '900', margin: '0 0 10px 0', color: '#0f172a' }}>Candidate Match Matrix</h3>
+                    <p style={{ color: '#475569', fontSize: '13.5px', lineHeight: '1.6', margin: '0 0 24px 0', fontWeight: '600' }}>
+                      Isolate candidate matching loops. Execute structured vector score analysis maps strictly across target parameters and parsed resume database models.
                     </p>
                   </div>
                   <button 
                     onClick={() => setActiveView('match-matrix')}
-                    style={{ background: 'linear-gradient(135deg, #1e293b 0%, #0f172a 100%)', color: '#22c55e', border: '1px solid rgba(34,197,94,0.3)', width: '100%', padding: '12px', borderRadius: '8px', fontWeight: '800', fontSize: '13.5px', cursor: 'pointer', transition: 'background 0.1s' }}
-                    onMouseEnter={(e) => e.currentTarget.style.background = '#1e293b'} onMouseLeave={(e) => e.currentTarget.style.background = 'linear-gradient(135deg, #1e293b 0%, #0f172a 100%)'}
+                    style={{ background: 'linear-gradient(135deg, #1e293b 0%, #0f172a 100%)', color: '#22c55e', border: '1px solid rgba(255,255,255,0.05)', width: '100%', padding: '13px', borderRadius: '10px', fontWeight: '900', fontSize: '13.5px', cursor: 'pointer', boxShadow: '0 4px 12px rgba(15, 23, 42, 0.15)' }}
                   >
                     Launch Match Sync Engine →
                   </button>
@@ -499,125 +540,137 @@ export default function TalentLink() {
             </div>
           </div>
 
-        ) : (
-          
-          /* VIEW 2 & 3: THE INTERACTIVE CONSOLE CHAT SPACES */
-          <div style={{ flex: 1, display: 'flex', height: '100%', overflow: 'hidden' }}>
-            
-            {/* CENTRAL WORKSPACE FEED */}
-            <div style={{ flex: 1, display: 'flex', flexDirection: 'column', backgroundColor: 'transparent', height: '100%' }}>
-              <div style={{ flex: 1, padding: '30px', overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '20px' }}>
-                {currentSession.messages.map((m, i) => (
-                  <div key={i} style={{ display: 'flex', justifyContent: m.role === 'user' ? 'flex-end' : 'flex-start' }}>
-                    <div style={{ 
-                      maxWidth: '75%', padding: '16px 20px', borderRadius: '12px', 
-                      background: m.role === 'user' ? 'rgba(255, 255, 255, 0.05)' : 'rgba(30, 41, 59, 0.6)', 
-                      color: '#ffffff', border: '1px solid rgba(255, 255, 255, 0.06)', backdropFilter: 'blur(10px)',
-                      lineHeight: '1.6', fontSize: '13.5px', fontWeight: '500', whiteSpace: 'pre-wrap', position: 'relative'
-                    }}>
-                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px', gap: '40px' }}>
-                        <span style={{ fontSize: '10px', textTransform: 'uppercase', letterSpacing: '0.5px', color: m.role === 'user' ? '#4ade80' : '#94a3b8', fontWeight: '800' }}>
-                          {m.role === 'user' ? 'Operator Query' : 'System Intelligence'}
-                        </span>
-                        <button onClick={() => copyToClipboard(m.content, `top-${i}`)} style={{ background: 'transparent', border: 'none', color: '#64748b', fontSize: '11px', cursor: 'pointer', fontWeight: '700' }}>
-                          {copiedId === `top-${i}` ? '✓ Copied' : '📋 Copy'}
+        ) : activeView === 'jd-generation' ? (
+
+          /* OPTION B: STANDALONE CHAT SUITE INTERACTIVE CONSOLE FOR JD GENERATION */
+          <div style={{ flex: 1, display: 'flex', flexDirection: 'column', height: '100%' }}>
+            <div style={{ flex: 1, padding: '30px', overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '24px' }}>
+              {currentSession.messages.map((m, i) => (
+                <div key={i} style={{ display: 'flex', justifyContent: m.role === 'user' ? 'flex-end' : 'flex-start', flexShrink: 0 }}>
+                  <div style={{ 
+                    maxWidth: '75%', padding: '20px 24px', borderRadius: '14px', 
+                    background: m.role === 'user' ? 'linear-gradient(135deg, rgba(248, 250, 252, 0.9) 0%, rgba(241, 245, 249, 0.9) 100%)' : 'linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(250, 250, 250, 0.9) 100%)', 
+                    color: '#0f172a', border: '1px solid rgba(15, 23, 42, 0.08)', boxShadow: '0 8px 32px rgba(15, 23, 42, 0.04)', 
+                    backdropFilter: 'blur(8px)', WebkitBackdropFilter: 'blur(8px)', lineHeight: '1.6', fontSize: '14px', fontWeight: '600', whiteSpace: 'pre-wrap', position: 'relative'
+                  }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px', gap: '40px' }}>
+                      <div style={{ fontSize: '11px', textTransform: 'uppercase', letterSpacing: '1px', color: m.role === 'user' ? '#16a34a' : '#475569', fontWeight: '900' }}>
+                        {m.role === 'user' ? 'Operator Query' : 'Nexus AI Intelligence'}
+                      </div>
+                      <button onClick={() => copyToClipboard(m.content, `top-${i}`)} style={{ background: 'transparent', border: 'none', color: '#64748b', fontSize: '12px', cursor: 'pointer', fontWeight: '800' }}>
+                        {copiedId === `top-${i}` ? '✓ Copied' : '📋 Copy'}
+                      </button>
+                    </div>
+                    <div style={{ paddingBottom: m.role === 'assistant' ? '32px' : '0px', color: '#1e293b' }}>{m.content}</div>
+                    {m.role === 'assistant' && (
+                      <div style={{ position: 'absolute', bottom: '12px', right: '18px' }}>
+                        <button type="button" onClick={() => copyToClipboard(m.content, `bottom-${i}`)} style={{ background: 'linear-gradient(180deg, #ffffff 0%, #f1f5f9 100%)', border: '1px solid rgba(15, 23, 42, 0.1)', color: '#334155', fontSize: '11px', cursor: 'pointer', fontWeight: '800', padding: '6px 12px', borderRadius: '6px', boxShadow: '0 2px 4px rgba(0,0,0,0.04)' }}>
+                          {copiedId === `bottom-${i}` ? '✓ Copied response' : '📋 Copy Response'}
                         </button>
                       </div>
-                      <div style={{ paddingBottom: m.role === 'assistant' ? '28px' : '0px', color: '#e2e8f0' }}>{m.content}</div>
-                      {m.role === 'assistant' && (
-                        <div style={{ position: 'absolute', bottom: '10px', right: '14px' }}>
-                          <button onClick={() => copyToClipboard(m.content, `bottom-${i}`)} style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.06)', color: '#cbd5e1', fontSize: '10.5px', cursor: 'pointer', padding: '4px 8px', borderRadius: '4px' }}>
-                            {copiedId === `bottom-${i}` ? '✓ Copied response' : '📋 Copy Response'}
-                          </button>
-                        </div>
-                      )}
-                    </div>
+                    )}
                   </div>
-                ))}
+                </div>
+              ))}
+            </div>
+            
+            <form onSubmit={handleSend} style={{ padding: '24px 30px', borderTop: '1px solid rgba(15, 23, 42, 0.06)', display: 'flex', gap: '16px', background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.75) 0%, rgba(255, 255, 255, 0.9) 100%)', backdropFilter: 'blur(12px)', flexShrink: 0 }}>
+              <input type="text" value={input} onChange={(e) => setInput(e.target.value)} placeholder="Provide core parameters to update or engineer targeted JDs..." style={{ flex: 1, padding: '16px 20px', borderRadius: '10px', border: '1px solid rgba(15, 23, 42, 0.12)', backgroundColor: 'rgba(255, 255, 255, 0.8)', color: '#0f172a', outline: 'none', fontSize: '14px', fontWeight: '600' }} />
+              <button type="submit" style={{ background: 'linear-gradient(135deg, #22c55e 0%, #16a34a 100%)', border: 'none', padding: '0 32px', borderRadius: '10px', color: '#0f172a', fontWeight: '900', fontSize: '14px', cursor: 'pointer', boxShadow: '0 4px 12px rgba(34, 197, 94, 0.2)' }}>
+                {isLoading ? 'Parsing...' : 'Execute'}
+              </button>
+            </form>
+          </div>
+
+        ) : (
+
+          /* OPTION C: DESIGNATED LAB FOR CANDIDATE MATCH MATRIX ONLY */
+          <div style={{ flex: 1, display: 'flex', height: '100%', overflow: 'hidden' }}>
+            
+            {/* INPUT MATRIX CONTROL BOX COLUMN */}
+            <div style={{ 
+              width: '380px', backgroundColor: 'rgba(248, 250, 252, 0.85)', backdropFilter: 'blur(16px)', WebkitBackdropFilter: 'blur(16px)',
+              padding: '30px 24px', display: 'flex', flexDirection: 'column', borderRight: '1px solid rgba(15, 23, 42, 0.08)', height: '100%', boxSizing: 'border-box'
+            }}>
+              <div style={{ flexShrink: 0 }}>
+                <h2 style={{ fontSize: '16px', margin: '0 0 4px 0', fontWeight: '900', color: '#0f172a' }}>Job Spec Parameters</h2>
+                <p style={{ fontSize: '12px', color: '#475569', margin: '0 0 20px 0', lineHeight: '1.4', fontWeight: '600' }}>Enter requirements specs to process compliance alignment vectors manually.</p>
               </div>
 
-              {/* CONSOLE INPUT ROW TERMINAL */}
-              <form onSubmit={handleSend} style={{ padding: '20px 30px', background: 'rgba(15,23,42,0.3)', borderTop: '1px solid rgba(255,255,255,0.05)', backdropFilter: 'blur(10px)', display: 'flex', gap: '14px' }}>
-                <input 
-                  type="text" value={input} onChange={(e) => setInput(e.target.value)} 
-                  placeholder={activeView === 'jd-generation' ? "Ask the AI to design requirements, rewrite job functions, change layout..." : "Instruct candidate screening adjustments, pipeline matrix instructions..."}
-                  style={{ flex: 1, padding: '14px 18px', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.1)', backgroundColor: 'rgba(15,23,42,0.6)', color: '#ffffff', outline: 'none', fontSize: '13.5px' }}
-                />
-                <button type="submit" style={{ background: '#22c55e', color: '#0f172a', border: 'none', padding: '0 24px', borderRadius: '8px', fontWeight: '800', fontSize: '13px', cursor: 'pointer', boxShadow: '0 4px 12px rgba(34,197,94,0.2)' }}>
-                  {isLoading ? 'Processing...' : 'Execute'}
-                </button>
-              </form>
+              <textarea 
+                value={currentSession.jdInput} 
+                onChange={(e) => updateCurrentSession({ jdInput: e.target.value })} 
+                placeholder="Paste targeted core job description requirements criteria here..." 
+                style={{ 
+                  width: '100%', height: '220px', padding: '16px', borderRadius: '10px', border: '1px solid rgba(15, 23, 42, 0.1)', 
+                  backgroundColor: 'rgba(255, 255, 255, 0.75)', color: '#0f172a', outline: 'none', resize: 'none', boxSizing: 'border-box', 
+                  fontSize: '13px', lineHeight: '1.5', fontWeight: '600', marginBottom: '16px', flexShrink: 0
+                }} 
+              />
+
+              <button 
+                onClick={handleMatchCandidates} 
+                style={{ 
+                  width: '100%', background: 'linear-gradient(135deg, #1e293b 0%, #0f172a 100%)', color: '#22c55e', border: '1px solid rgba(255,255,255,0.05)', 
+                  padding: '14px', borderRadius: '10px', fontWeight: '900', fontSize: '13px', cursor: 'pointer', boxShadow: '0 4px 12px rgba(15, 23, 42, 0.15)', flexShrink: 0
+                }}
+              >
+                {isMatching ? 'Processing Vector Analysis...' : '⚡ Generate Sync Analysis'}
+              </button>
             </div>
 
-            {/* CANDIDATE COMPLIANCE PANEL (Only displayed inside candidate-matching views) */}
-            {activeView === 'match-matrix' && (
-              <div style={{ 
-                width: '340px', backgroundColor: 'rgba(15, 23, 42, 0.4)', backdropFilter: 'blur(16px)', padding: '24px', display: 'flex', flexDirection: 'column', 
-                borderLeft: '1px solid rgba(255,255,255,0.06)', height: '100%', boxSizing: 'border-box'
-              }}>
-                <div style={{ flexShrink: 0 }}>
-                  <h2 style={{ fontSize: '15px', fontWeight: '800', margin: '0 0 4px 0' }}>Job Spec Parameters</h2>
-                  <p style={{ fontSize: '11.5px', color: '#64748b', margin: '0 0 16px 0', lineHeight: '1.4' }}>Paste core target operational descriptions below to run candidate vector cross evaluations.</p>
-                </div>
-                <textarea 
-                  value={currentSession.jdInput} onChange={(e) => updateCurrentSession({ jdInput: e.target.value })} 
-                  placeholder="Paste targeted core job description compliance criteria here..." 
-                  style={{ width: '100%', height: '150px', padding: '12px', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.08)', backgroundColor: 'rgba(15,23,42,0.5)', color: '#ffffff', outline: 'none', resize: 'none', boxSizing: 'border-box', fontSize: '12.5px', lineHeight: '1.4', fontWeight: '500' }} 
-                />
-                <button 
-                  onClick={handleMatchCandidates}
-                  style={{ width: '100%', background: 'linear-gradient(135deg, #1e293b 0%, #0f172a 100%)', color: '#22c55e', border: '1px solid rgba(34,197,94,0.3)', padding: '12px', borderRadius: '8px', fontWeight: '800', fontSize: '12.5px', marginTop: '12px', cursor: 'pointer', transition: 'all 0.1s' }}
-                >
-                  {isMatching ? 'Rebuilding Sync Index...' : '⚡ Generate Sync Analysis'}
-                </button>
-
-                <div style={{ marginTop: '20px', flex: 1, overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                  {currentSession.matchResults.length > 0 ? (
-                    currentSession.matchResults.map((res, idx) => (
-                      <div key={idx} style={{ background: 'rgba(255,255,255,0.02)', padding: '14px', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.04)' }}>
-                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px' }}>
-                          <span style={{ color: '#4ade80', fontSize: '10.5px', fontWeight: '800', textTransform: 'uppercase' }}>{res.title}</span>
-                          <button onClick={() => copyToClipboard(res.details, `matrix-${idx}`)} style={{ background: 'transparent', border: 'none', color: '#64748b', fontSize: '11px', cursor: 'pointer' }}>📋 Copy</button>
-                        </div>
-                        <p style={{ margin: 0, fontSize: '12px', lineHeight: '1.4', color: '#cbd5e1', whiteSpace: 'pre-wrap' }}>{res.details}</p>
-                      </div>
-                    ))
-                  ) : (
-                    <div style={{ border: '1px dashed rgba(255,255,255,0.1)', borderRadius: '8px', padding: '24px 16px', textAlign: 'center', color: '#64748b', fontSize: '12px', marginTop: '10px' }}>
-                      No evaluation matrices computed yet inside this specific sandbox node.
-                    </div>
-                  )}
-                </div>
+            {/* ANALYSED MATRIX OUTPUT INTERFACE WINDOW */}
+            <div style={{ flex: 1, padding: '30px', overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '20px', backgroundColor: 'transparent' }}>
+              <div style={{ fontSize: '11px', textTransform: 'uppercase', letterSpacing: '1px', color: '#475569', fontWeight: '900', marginBottom: '-10px' }}>
+                Analysed Performance Results
               </div>
-            )}
+
+              {currentSession.matchResults.length > 0 ? (
+                currentSession.matchResults.map((res, index) => (
+                  <div key={index} style={{ background: 'linear-gradient(135deg, #ffffff 0%, #f8fafc 100%)', padding: '24px', borderRadius: '12px', border: '1px solid rgba(15, 23, 42, 0.06)', color: '#0f172a', boxShadow: '0 4px 16px rgba(0,0,0,0.02)' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
+                      <div style={{ color: '#16a34a', fontSize: '12px', fontWeight: '900', textTransform: 'uppercase' }}>{res.title}</div>
+                      <button onClick={() => copyToClipboard(res.details, `matrix-${index}`)} style={{ background: 'transparent', border: 'none', color: '#64748b', fontSize: '12px', cursor: 'pointer', fontWeight: '800', textDecoration: 'underline' }}>
+                        {copiedId === `matrix-${index}` ? '✓ Copied' : '📋 Copy Results'}
+                      </button>
+                    </div>
+                    <p style={{ margin: 0, fontSize: '14px', lineHeight: '1.6', color: '#334155', fontWeight: '600', whiteSpace: 'pre-wrap' }}>{res.details}</p>
+                  </div>
+                ))
+              ) : (
+                <div style={{ border: '2px dashed rgba(15, 23, 42, 0.1)', borderRadius: '12px', padding: '40px 20px', textAlign: 'center', color: '#64748b', fontSize: '14px', fontWeight: '600', marginTop: '10px' }}>
+                  No matrix analysis has been requested yet. Input core Job Spec parameters on the left controls panel and select Generate Sync Analysis to view results.
+                </div>
+              )}
+            </div>
 
           </div>
         )}
       </div>
 
-      {/* SYSTEM APPLICATION MODALS */}
+      {/* MODAL WINDOW LAYERS */}
       {isAboutOpen && (
-        <div onClick={() => setIsAboutOpen(false)} style={{ position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh', backgroundColor: 'rgba(15,23,42,0.6)', backdropFilter: 'blur(8px)', display: 'flex', justifyContent: 'center', alignItems: 'center', zIndex: 100 }}>
-          <div onClick={(e) => e.stopPropagation()} style={{ width: '460px', background: 'linear-gradient(135deg, #1e293b 0%, #0f172a 100%)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '16px', padding: '30px', boxShadow: '0 20px 50px rgba(0,0,0,0.4)' }}>
-            <h3 style={{ margin: '0 0 16px 0', color: '#ffffff', fontSize: '18px', fontWeight: '800' }}>About Talent-Link</h3>
-            <p style={{ margin: 0, fontSize: '13.5px', lineHeight: '1.6', color: '#94a3b8' }}>
+        <div onClick={() => setIsAboutOpen(false)} style={{ position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh', backgroundColor: 'rgba(15, 23, 42, 0.3)', backdropFilter: 'blur(8px)', WebkitBackdropFilter: 'blur(8px)', display: 'flex', justifyContent: 'center', alignItems: 'center', zIndex: 100 }}>
+          <div onClick={(e) => e.stopPropagation()} style={{ width: '460px', background: 'linear-gradient(135deg, #ffffff 0%, #f8fafc 100%)', border: '1px solid rgba(255,255,255,0.7)', borderRadius: '16px', padding: '30px', boxShadow: '0 20px 50px rgba(15, 23, 42, 0.15)' }}>
+            <h3 style={{ margin: '0 0 16px 0', color: '#0f172a', fontSize: '19px', fontWeight: '900' }}>About Talent-Link</h3>
+            <p style={{ margin: 0, fontSize: '14px', lineHeight: '1.6', color: '#334155', fontWeight: '600' }}>
               I'm TalentLink AI, your intelligent hiring copilot designed to streamline the recruitment process for small and medium businesses. I help you create job descriptions, match resumes to job requirements, shortlist candidates, and explain their fit—all while saving you time and reducing hiring fatigue.
             </p>
-            <button onClick={() => setIsAboutOpen(false)} style={{ marginTop: '24px', float: 'right', padding: '10px 24px', background: '#22c55e', border: 'none', borderRadius: '6px', color: '#0f172a', fontWeight: '800', cursor: 'pointer' }}>Close</button>
+            <button onClick={() => setIsAboutOpen(false)} style={{ marginTop: '24px', float: 'right', padding: '10px 24px', background: 'linear-gradient(135deg, #22c55e 0%, #16a34a 100%)', border: 'none', borderRadius: '8px', color: '#0f172a', fontWeight: '900', cursor: 'pointer' }}>Close</button>
           </div>
         </div>
       )}
 
       {isContactOpen && (
-        <div onClick={() => setIsContactOpen(false)} style={{ position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh', backgroundColor: 'rgba(15,23,42,0.6)', backdropFilter: 'blur(8px)', display: 'flex', justifyContent: 'center', alignItems: 'center', zIndex: 100 }}>
-          <div onClick={(e) => e.stopPropagation()} style={{ width: '400px', background: 'linear-gradient(135deg, #1e293b 0%, #0f172a 100%)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '16px', padding: '30px', boxShadow: '0 20px 50px rgba(0,0,0,0.4)' }}>
-            <h3 style={{ margin: '0 0 16px 0', color: '#ffffff', fontSize: '18px', fontWeight: '800' }}>Contact Us</h3>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', fontSize: '14px', color: '#cbd5e1' }}>
-              <div>👤 <span>Siddarth</span></div>
-              <div>👤 <span>Bhavesh</span></div>
-              <div>👤 <span>Surya</span></div>
+        <div onClick={() => setIsContactOpen(false)} style={{ position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh', backgroundColor: 'rgba(15, 23, 42, 0.3)', backdropFilter: 'blur(8px)', WebkitBackdropFilter: 'blur(8px)', display: 'flex', justifyContent: 'center', alignItems: 'center', zIndex: 100 }}>
+          <div onClick={(e) => e.stopPropagation()} style={{ width: '400px', background: 'linear-gradient(135deg, #ffffff 0%, #f8fafc 100%)', border: '1px solid rgba(255,255,255,0.7)', borderRadius: '16px', padding: '30px', boxShadow: '0 20px 50px rgba(15, 23, 42, 0.15)' }}>
+            <h3 style={{ margin: '0 0 16px 0', color: '#0f172a', fontSize: '19px', fontWeight: '900' }}>Contact Us</h3>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '14px', fontSize: '15px', color: '#334155', fontWeight: '700' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>👤 <span>Siddarth</span></div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>👤 <span>Bhavesh</span></div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>👤 <span>Surya</span></div>
             </div>
-            <button onClick={() => setIsContactOpen(false)} style={{ marginTop: '24px', float: 'right', padding: '10px 24px', background: '#22c55e', border: 'none', borderRadius: '6px', color: '#0f172a', fontWeight: '800', cursor: 'pointer' }}>Close</button>
+            <button onClick={() => setIsContactOpen(false)} style={{ marginTop: '24px', float: 'right', padding: '10px 24px', background: 'linear-gradient(135deg, #22c55e 0%, #16a34a 100%)', border: 'none', borderRadius: '8px', color: '#0f172a', fontWeight: '900', cursor: 'pointer' }}>Close</button>
           </div>
         </div>
       )}

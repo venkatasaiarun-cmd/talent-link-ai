@@ -69,10 +69,83 @@ export default function TalentLink() {
   const [totalVacancies, setTotalVacancies] = useState<number>(12); 
   const [appliedCandidates, setAppliedCandidates] = useState<number>(48);
 
+  // Helper utility to turn generated markdown into beautiful, clean React layout lines
+  const renderFormattedContent = (text: string) => {
+    // Clean up rogue special/hidden spaces
+    const cleanText = text.replace(/[\u00A0\u1680 ]/g, ' ');
+    const lines = cleanText.split('\n');
+
+    return lines.map((line, index) => {
+      let currentLine = line.trim();
+
+      if (!currentLine) {
+        return <div key={index} style={{ height: '12px' }} />;
+      }
+
+      // 1. Render Section Subheaders (### Header)
+      if (currentLine.startsWith('###')) {
+        return (
+          <h3 key={index} style={{ fontSize: '16px', fontWeight: '800', color: '#0f172a', marginTop: '18px', marginBottom: '8px' }}>
+            {currentLine.replace(/^###\s*/, '')}
+          </h3>
+        );
+      }
+
+      // 2. Render List Bullets (- Item)
+      if (currentLine.startsWith('-') || currentLine.startsWith('*')) {
+        const itemContent = currentLine.replace(/^[-\*]\s*/, '');
+        return (
+          <ul key={index} style={{ margin: '4px 0 4px 18px', padding: 0, listStyleType: 'disc' }}>
+            <li style={{ color: '#334155', fontSize: '13.5px' }}>
+              {parseInlineStyles(itemContent)}
+            </li>
+          </ul>
+        );
+      }
+
+      // 3. Horizontal Separators (---)
+      if (currentLine === '---') {
+        return <hr key={index} style={{ border: 'none', borderTop: '1px solid rgba(15,23,42,0.1)', margin: '16px 0' }} />;
+      }
+
+      // Default line paragraph wrapper
+      return (
+        <p key={index} style={{ margin: '0 0 8px 0', color: '#334155', fontSize: '13.5px', lineHeight: '1.6' }}>
+          {parseInlineStyles(currentLine)}
+        </p>
+      );
+    });
+  };
+
+  // Nested parser to safely switch **Bold text:** tokens to functional bold tags
+  const parseInlineStyles = (text: string) => {
+    const boldRegex = /\*\*(.*?)\*\*/g;
+    const parts = [];
+    let lastIndex = 0;
+    let match;
+
+    while ((match = boldRegex.exec(text)) !== null) {
+      if (match.index > lastIndex) {
+        parts.push(text.substring(lastIndex, match.index));
+      }
+      parts.push(
+        <strong key={match.index} style={{ fontWeight: '700', color: '#0f172a' }}>
+          {match[1]}
+        </strong>
+      );
+      lastIndex = boldRegex.lastIndex;
+    }
+
+    if (lastIndex < text.length) {
+      parts.push(text.substring(lastIndex));
+    }
+
+    return parts.length > 0 ? parts : text;
+  };
+
   useEffect(() => {
     setMounted(true);
     
-    // Safely check mobile size on mount and window resize
     const checkMobileSize = () => {
       setIsMobile(window.innerWidth <= 768);
     };
@@ -89,19 +162,10 @@ export default function TalentLink() {
         width: 100% !important;
         background-color: #f8fafc;
       }
-      ::-webkit-scrollbar {
-        width: 6px;
-      }
-      ::-webkit-scrollbar-track {
-        background: transparent;
-      }
-      ::-webkit-scrollbar-thumb {
-        background: rgba(15, 23, 42, 0.15);
-        border-radius: 10px;
-      }
-      ::-webkit-scrollbar-thumb:hover {
-        background: rgba(15, 23, 42, 0.3);
-      }
+      ::-webkit-scrollbar { width: 6px; }
+      ::-webkit-scrollbar-track { background: transparent; }
+      ::-webkit-scrollbar-thumb { background: rgba(15, 23, 42, 0.15); border-radius: 10px; }
+      ::-webkit-scrollbar-thumb:hover { background: rgba(15, 23, 42, 0.3); }
     `;
     document.head.appendChild(style);
     
@@ -147,7 +211,6 @@ export default function TalentLink() {
 
     const draw = () => {
       ctx.clearRect(0, 0, width, height);
-      
       const gradient = ctx.createLinearGradient(0, 0, width, height);
       gradient.addColorStop(0, '#f1f5f9');
       gradient.addColorStop(0.5, '#f8fafc');
@@ -173,7 +236,6 @@ export default function TalentLink() {
       items.forEach((item) => {
         item.x += item.vx;
         item.y += item.vy;
-
         if (item.x < 0) item.x = width;
         if (item.x > width) item.x = 0;
         if (item.y < 0) item.y = height;
@@ -310,15 +372,8 @@ export default function TalentLink() {
 
   const TalentLinkLogo = () => (
     <div style={{ 
-      width: '52px', 
-      height: '52px', 
-      backgroundColor: '#22c55e', 
-      borderRadius: '14px', 
-      padding: '8px', 
-      boxSizing: 'border-box',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
+      width: '52px', height: '52px', backgroundColor: '#22c55e', borderRadius: '14px', padding: '8px', boxSizing: 'border-box',
+      display: 'flex', alignItems: 'center', justifyContent: 'center',
       boxShadow: '0 0 20px rgba(34, 197, 94, 0.4), inset 0 -4px 8px rgba(0,0,0,0.2)'
     }}>
       <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ width: '100%', height: '100%' }}>
@@ -330,38 +385,19 @@ export default function TalentLink() {
 
   return (
     <div style={{ 
-      display: 'flex', 
-      height: '100vh', 
-      width: '100vw', 
-      fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif', 
-      margin: 0, 
-      backgroundColor: 'transparent',
-      color: '#0f172a',
-      overflow: 'hidden', 
-      position: 'relative'
+      display: 'flex', height: '100vh', width: '100vw', fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif', 
+      margin: 0, backgroundColor: 'transparent', color: '#0f172a', overflow: 'hidden', position: 'relative'
     }}>
       <canvas ref={canvasRef} style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', zIndex: 0, pointerEvents: 'none' }} />
 
       {/* LEFT SIDEBAR */}
       <div style={{ 
-        width: '300px', 
-        backgroundColor: 'rgba(15, 23, 42, 0.92)', 
-        backdropFilter: 'blur(16px)',
-        WebkitBackdropFilter: 'blur(16px)',
-        padding: '24px 16px', 
-        display: 'flex', 
-        flexDirection: 'column', 
-        borderRight: '1px solid rgba(255, 255, 255, 0.1)', 
-        justifyContent: 'space-between',
-        height: '100%',
-        boxSizing: 'border-box',
-        boxShadow: '4px 0 24px rgba(15, 23, 42, 0.15)',
-        zIndex: 10,
-        transition: 'transform 0.3s ease',
+        width: '300px', backgroundColor: 'rgba(15, 23, 42, 0.92)', backdropFilter: 'blur(16px)', WebkitBackdropFilter: 'blur(16px)',
+        padding: '24px 16px', display: 'flex', flexDirection: 'column', borderRight: '1px solid rgba(255, 255, 255, 0.1)', 
+        justifyContent: 'space-between', height: '100%', boxSizing: 'border-box', boxShadow: '4px 0 24px rgba(15, 23, 42, 0.15)',
+        zIndex: 10, transition: 'transform 0.3s ease',
         transform: isMobile ? (isSidebarOpen ? 'translateX(0)' : 'translateX(-100%)') : 'none',
-        left: 0,
-        top: 0,
-        position: isMobile ? 'absolute' : 'relative',
+        left: 0, top: 0, position: isMobile ? 'absolute' : 'relative',
       }}>
         <div style={{ display: 'flex', flexDirection: 'column', height: 'calc(100% - 140px)', overflow: 'hidden' }}>
           
@@ -426,11 +462,8 @@ export default function TalentLink() {
                         padding: '12px', 
                         background: isActive ? 'linear-gradient(135deg, rgba(34, 197, 94, 0.95) 0%, rgba(22, 163, 74, 0.95) 100%)' : 'transparent', 
                         borderLeft: isActive ? '4px solid #ffffff' : '4px solid transparent', 
-                        color: isActive ? '#0f172a' : '#e2e8f0', 
-                        borderRadius: '0 8px 8px 0', 
-                        fontSize: '13px', 
-                        fontWeight: isActive ? '900' : '600', 
-                        cursor: 'pointer',
+                        color: isActive ? '#0f172a' : '#e2e8f0', borderRadius: '0 8px 8px 0', fontSize: '13px', 
+                        fontWeight: isActive ? '900' : '600', cursor: 'pointer',
                         whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis',
                         boxShadow: isActive ? '0 4px 12px rgba(22, 163, 74, 0.2)' : 'none'
                       }}
@@ -463,10 +496,7 @@ export default function TalentLink() {
       {isMobile && isSidebarOpen && (
         <div 
           onClick={() => setIsSidebarOpen(false)} 
-          style={{
-            position: 'absolute', top: 0, left: 0, width: '100vw', height: '100vh', 
-            backgroundColor: 'rgba(0,0,0,0.4)', zIndex: 9, backdropFilter: 'blur(4px)'
-          }}
+          style={{ position: 'absolute', top: 0, left: 0, width: '100vw', height: '100vh', backgroundColor: 'rgba(0,0,0,0.4)', zIndex: 9, backdropFilter: 'blur(4px)' }}
         />
       )}
 
@@ -475,21 +505,14 @@ export default function TalentLink() {
         
         {/* UPPER STRIP AREA */}
         <div style={{ 
-          padding: '16px 20px', 
-          borderBottom: '1px solid rgba(15, 23, 42, 0.08)', 
-          display: 'flex', 
-          alignItems: 'center', 
+          padding: '16px 20px', borderBottom: '1px solid rgba(15, 23, 42, 0.08)', display: 'flex', alignItems: 'center', 
           background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0.75) 100%)',
-          backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)',
-          boxShadow: '0 2px 12px rgba(0, 0, 0, 0.02)', flexShrink: 0
+          backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)', boxShadow: '0 2px 12px rgba(0, 0, 0, 0.02)', flexShrink: 0
         }}>
           {isMobile && (
             <button 
               onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-              style={{
-                background: '#1e293b', border: 'none', color: '#ffffff', padding: '8px 12px', 
-                borderRadius: '6px', marginRight: '12px', cursor: 'pointer'
-              }}
+              style={{ background: '#1e293b', border: 'none', color: '#ffffff', padding: '8px 12px', borderRadius: '6px', marginRight: '12px', cursor: 'pointer' }}
             >
               ☰
             </button>
@@ -521,8 +544,7 @@ export default function TalentLink() {
 
               {/* INTEGRATED DASHBOARD METRICS SUMMARY */}
               <div style={{
-                background: 'linear-gradient(135deg, #0f172a 0%, #1e293b 100%)',
-                borderRadius: '16px', padding: '24px', marginBottom: '30px', color: '#ffffff',
+                background: 'linear-gradient(135deg, #0f172a 0%, #1e293b 100%)', borderRadius: '16px', padding: '24px', marginBottom: '30px', color: '#ffffff',
                 boxShadow: '0 8px 30px rgba(15,23,42,0.15)', display: 'flex', flexDirection: 'column', gap: '16px'
               }}>
                 <h3 style={{ margin: 0, fontSize: '14px', fontWeight: '800', textTransform: 'uppercase', letterSpacing: '1px', color: '#22c55e' }}>📊 Analytics Summary Dashboard</h3>
@@ -543,7 +565,7 @@ export default function TalentLink() {
                 <div style={{ 
                   background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(248, 250, 252, 0.9) 100%)',
                   backdropFilter: 'blur(16px)', borderRadius: '16px', border: '1px solid rgba(255,255,255,0.8)', padding: '24px',
-                  boxShadow: '0 12px 40px rgba(15, 23, 42, 0.06)', display: 'flex', flexDirection: 'column', justifyContent: 'space-between'
+                  boxShadow: '0 12px 40px rgba(15, 23, 42, 0.06)', display: 'flex', flexDirection: 'column', justifyBetween: 'space-between'
                 }}>
                   <div>
                     <span style={{ fontSize: '24px', display: 'block', marginBottom: '12px' }}>📝</span>
@@ -563,7 +585,7 @@ export default function TalentLink() {
                 <div style={{ 
                   background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(248, 250, 252, 0.9) 100%)',
                   backdropFilter: 'blur(16px)', borderRadius: '16px', border: '1px solid rgba(255,255,255,0.8)', padding: '24px',
-                  boxShadow: '0 12px 40px rgba(15, 23, 42, 0.06)', display: 'flex', flexDirection: 'column', justifyContent: 'space-between'
+                  boxShadow: '0 12px 40px rgba(15, 23, 42, 0.06)', display: 'flex', flexDirection: 'column', justifyBetween: 'space-between'
                 }}>
                   <div>
                     <span style={{ fontSize: '24px', display: 'block', marginBottom: '12px' }}>⚡</span>
@@ -591,12 +613,12 @@ export default function TalentLink() {
               {currentSession.messages.map((m, i) => (
                 <div key={i} style={{ display: 'flex', justifyContent: m.role === 'user' ? 'flex-end' : 'flex-start', flexShrink: 0 }}>
                   <div style={{ 
-                    maxWidth: '85%', padding: '16px', borderRadius: '14px', 
+                    maxWidth: '85%', padding: '20px', borderRadius: '14px', 
                     background: m.role === 'user' ? 'linear-gradient(135deg, rgba(248, 250, 252, 0.9) 0%, rgba(241, 245, 249, 0.9) 100%)' : 'linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(250, 250, 250, 0.9) 100%)', 
                     color: '#0f172a', border: '1px solid rgba(15, 23, 42, 0.08)', boxShadow: '0 8px 32px rgba(15, 23, 42, 0.04)', 
-                    backdropFilter: 'blur(8px)', WebkitBackdropFilter: 'blur(8px)', lineHeight: '1.5', fontSize: '13.5px', fontWeight: '600', whiteSpace: 'pre-wrap', position: 'relative'
+                    backdropFilter: 'blur(8px)', WebkitBackdropFilter: 'blur(8px)', position: 'relative'
                   }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px', gap: '20px' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px', gap: '20px' }}>
                       <div style={{ fontSize: '11px', textTransform: 'uppercase', letterSpacing: '1px', color: m.role === 'user' ? '#16a34a' : '#475569', fontWeight: '900' }}>
                         {m.role === 'user' ? 'Operator Query' : 'Nexus AI'}
                       </div>
@@ -604,9 +626,14 @@ export default function TalentLink() {
                         {copiedId === `top-${i}` ? '✓' : '📋'}
                       </button>
                     </div>
-                    <div style={{ paddingBottom: m.role === 'assistant' ? '36px' : '0px', color: '#1e293b' }}>{m.content}</div>
+                    
+                    {/* Rendered dynamic rich text formatting helper instead of a raw un-parsed string block */}
+                    <div style={{ paddingBottom: m.role === 'assistant' ? '40px' : '0px' }}>
+                      {renderFormattedContent(m.content)}
+                    </div>
+
                     {m.role === 'assistant' && (
-                      <div style={{ position: 'absolute', bottom: '10px', right: '12px' }}>
+                      <div style={{ position: 'absolute', bottom: '12px', right: '12px' }}>
                         <button type="button" onClick={() => copyToClipboard(m.content, `bottom-${i}`)} style={{ background: 'linear-gradient(180deg, #ffffff 0%, #f1f5f9 100%)', border: '1px solid rgba(15, 23, 42, 0.1)', color: '#334155', fontSize: '10px', cursor: 'pointer', fontWeight: '800', padding: '4px 8px', borderRadius: '6px' }}>
                           {copiedId === `bottom-${i}` ? '✓ Copied' : '📋 Copy Text'}
                         </button>
@@ -630,8 +657,7 @@ export default function TalentLink() {
           <div style={{ flex: 1, display: 'flex', flexDirection: isMobile ? 'column' : 'row', height: '100%', overflow: 'hidden' }}>
             
             <div style={{ 
-              width: isMobile ? '100%' : '350px', 
-              backgroundColor: 'rgba(248, 250, 252, 0.85)', backdropFilter: 'blur(16px)', WebkitBackdropFilter: 'blur(16px)',
+              width: isMobile ? '100%' : '350px', backgroundColor: 'rgba(248, 250, 252, 0.85)', backdropFilter: 'blur(16px)', WebkitBackdropFilter: 'blur(16px)',
               padding: '20px', display: 'flex', flexDirection: 'column', borderRight: '1px solid rgba(15, 23, 42, 0.08)', borderBottom: isMobile ? '1px solid rgba(15, 23, 42, 0.08)' : 'none', boxSizing: 'border-box', flexShrink: 0
             }}>
               <div>
@@ -673,7 +699,9 @@ export default function TalentLink() {
                 currentSession.matchResults.map((res, idx) => (
                   <div key={idx} style={{ padding: '20px', background: '#ffffff', borderRadius: '12px', border: '1px solid rgba(15,23,42,0.06)', boxShadow: '0 4px 20px rgba(0,0,0,0.02)' }}>
                     <h4 style={{ margin: '0 0 8px 0', fontSize: '15px', fontWeight: '900', color: '#0f172a' }}>{res.title}</h4>
-                    <p style={{ margin: 0, fontSize: '13.5px', color: '#334155', lineHeight: '1.6', fontWeight: '600', whiteSpace: 'pre-wrap' }}>{res.details}</p>
+                    <div style={{ fontSize: '13.5px', color: '#334155', lineHeight: '1.6', fontWeight: '600' }}>
+                      {renderFormattedContent(res.details)}
+                    </div>
                   </div>
                 ))
               )}

@@ -704,7 +704,7 @@ export default function TalentLink() {
                   <div key={candidate.id || idx} style={{ background: '#ffffff', padding: '18px', borderRadius: '10px', border: '1px solid rgba(15, 23, 42, 0.06)', color: '#0f172a', boxShadow: '0 2px 8px rgba(0,0,0,0.01)' }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '8px', marginBottom: '8px' }}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                        <span style={{尊称: 'none', fontWeight: '900', fontSize: '14px' }}>👤 {candidate.candidateName}</span>
+                        <span style={{ fontWeight: '900', fontSize: '14px' }}>👤 {candidate.candidateName}</span>
                         <span style={{ backgroundColor: '#dcfce7', color: '#15803d', fontSize: '11px', fontWeight: '800', padding: '1px 6px', borderRadius: '8px' }}>
                           {candidate.matchScore}% Fit
                         </span>

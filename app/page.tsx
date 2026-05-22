@@ -148,7 +148,7 @@ export default function TalentLink() {
         padding: 0 !important;
         height: 100% !important;
         width: 100% !important;
-        background-color: #f8fafc;
+        background-color: #ffffff;
       }
       ::-webkit-scrollbar { width: 6px; }
       ::-webkit-scrollbar-track { background: transparent; }
@@ -200,11 +200,11 @@ export default function TalentLink() {
     const draw = () => {
       ctx.clearRect(0, 0, width, height);
       
-      // Let the CSS light background layer blend gracefully behind the network layout
+      // Significantly brighter background canvas filling logic to improve contrast
       const gradient = ctx.createLinearGradient(0, 0, width, height);
-      gradient.addColorStop(0, 'rgba(241, 245, 249, 0.75)');
-      gradient.addColorStop(0.5, 'rgba(255, 255, 255, 0.8)');
-      gradient.addColorStop(1, 'rgba(226, 232, 240, 0.75)');
+      gradient.addColorStop(0, '#ffffff');
+      gradient.addColorStop(0.5, '#fdfdfd');
+      gradient.addColorStop(1, '#f1f5f9');
       ctx.fillStyle = gradient;
       ctx.fillRect(0, 0, width, height);
 
@@ -215,7 +215,7 @@ export default function TalentLink() {
             ctx.beginPath();
             ctx.moveTo(items[i].x, items[i].y);
             ctx.lineTo(items[j].x, items[j].y);
-            const alpha = (1 - dist / 200) * 0.15;
+            const alpha = (1 - dist / 200) * 0.12;
             ctx.strokeStyle = `rgba(30, 41, 59, ${alpha})`;
             ctx.lineWidth = 0.8;
             ctx.stroke();
@@ -235,7 +235,7 @@ export default function TalentLink() {
         ctx.translate(item.x, item.y);
         ctx.beginPath();
         ctx.arc(0, 0, item.type === 0 ? item.radius : item.radius + 1, 0, Math.PI * 2);
-        ctx.fillStyle = item.type === 0 ? 'rgba(15, 23, 42, 0.25)' : 'rgba(34, 197, 94, 0.45)';
+        ctx.fillStyle = item.type === 0 ? 'rgba(15, 23, 42, 0.2)' : 'rgba(34, 197, 94, 0.45)';
         ctx.fill();
         ctx.restore();
       });
@@ -350,13 +350,6 @@ export default function TalentLink() {
     }
   };
 
-  const handleResetMatrix = () => {
-    updateCurrentSession({
-      jdInput: '',
-      matchResults: []
-    });
-  };
-
   const copyToClipboard = (text: string, id: number | string) => {
     navigator.clipboard.writeText(text);
     setCopiedId(id);
@@ -364,7 +357,7 @@ export default function TalentLink() {
   };
 
   if (!mounted) {
-    return <div style={{ minHeight: '100vh', backgroundColor: '#f8fafc' }} />;
+    return <div style={{ minHeight: '100vh', backgroundColor: '#ffffff' }} />;
   }
 
   const TalentLinkLogo = () => (
@@ -383,17 +376,69 @@ export default function TalentLink() {
   return (
     <div style={{ 
       display: 'flex', height: '100vh', width: '100vw', fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif', 
-      margin: 0, color: '#0f172a', overflow: 'hidden', position: 'relative',
-      backgroundImage: "url('https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?q=80&w=1920&auto=format&fit=crop')",
-      backgroundSize: 'cover',
-      backgroundPosition: 'center',
-      backgroundAttachment: 'fixed'
+      margin: 0, backgroundColor: 'transparent', color: '#0f172a', overflow: 'hidden', position: 'relative'
     }}>
       <canvas ref={canvasRef} style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', zIndex: 0, pointerEvents: 'none' }} />
 
+      {/* ABOUT MODAL PORTAL DIALOG */}
+      {isAboutOpen && (
+        <div style={{
+          position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh', backgroundColor: 'rgba(15, 23, 42, 0.4)',
+          backdropFilter: 'blur(8px)', WebkitBackdropFilter: 'blur(8px)', zIndex: 100, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px', boxSizing: 'border-box'
+        }}>
+          <div style={{
+            background: '#ffffff', borderRadius: '16px', padding: '28px', maxWidth: '500px', width: '100%',
+            boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)', border: '1px solid rgba(15, 23, 42, 0.08)'
+          }}>
+            <h3 style={{ margin: '0 0 12px 0', fontSize: '18px', fontWeight: '900', color: '#0f172a', display: 'flex', alignItems: 'center', gap: '8px' }}>
+              ℹ️ About Talent-Link AI
+            </h3>
+            <p style={{ fontSize: '14px', color: '#334155', lineHeight: '1.6', margin: '0 0 20px 0', fontWeight: '600' }}>
+              Talent-Link is an intelligent recruitment orchestration pipeline designed to bridge communication gaps in human capital sourcing. By utilizing structured contextual language vectors, it accelerates compliant job description engineering and simplifies resume alignment processes within an integrated single control center workspace environment.
+            </p>
+            <button 
+              onClick={() => setIsAboutOpen(false)}
+              style={{ background: 'linear-gradient(135deg, #1e293b 0%, #0f172a 100%)', color: '#ffffff', border: 'none', padding: '10px 20px', borderRadius: '8px', fontWeight: '800', fontSize: '13px', cursor: 'pointer', float: 'right' }}
+            >
+              Dismiss
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* CONTACT US MODAL PORTAL DIALOG */}
+      {isContactOpen && (
+        <div style={{
+          position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh', backgroundColor: 'rgba(15, 23, 42, 0.4)',
+          backdropFilter: 'blur(8px)', WebkitBackdropFilter: 'blur(8px)', zIndex: 100, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px', boxSizing: 'border-box'
+        }}>
+          <div style={{
+            background: '#ffffff', borderRadius: '16px', padding: '28px', maxWidth: '450px', width: '100%',
+            boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)', border: '1px solid rgba(15, 23, 42, 0.08)'
+          }}>
+            <h3 style={{ margin: '0 0 16px 0', fontSize: '18px', fontWeight: '900', color: '#0f172a', display: 'flex', alignItems: 'center', gap: '8px' }}>
+              📞 System Administration Team
+            </h3>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginBottom: '24px' }}>
+              {['Siddharth Mishra', 'Surya Arun', 'Bhavesh Kumar Tomer'].map((name, idx) => (
+                <div key={idx} style={{ padding: '12px 16px', background: '#f8fafc', borderRadius: '8px', border: '1px solid #e2e8f0', color: '#0f172a', fontSize: '14px', fontWeight: '700' }}>
+                  👤 {name}
+                </div>
+              ))}
+            </div>
+            <button 
+              onClick={() => setIsContactOpen(false)}
+              style={{ background: 'linear-gradient(135deg, #1e293b 0%, #0f172a 100%)', color: '#ffffff', border: 'none', padding: '10px 20px', borderRadius: '8px', fontWeight: '800', fontSize: '13px', cursor: 'pointer', float: 'right' }}
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      )}
+
       {/* LEFT SIDEBAR */}
       <div style={{ 
-        width: '300px', backgroundColor: 'rgba(15, 23, 42, 0.92)', backdropFilter: 'blur(16px)', WebkitBackdropFilter: 'blur(16px)',
+        width: '300px', backgroundColor: 'rgba(15, 23, 42, 0.94)', backdropFilter: 'blur(16px)', WebkitBackdropFilter: 'blur(16px)',
         padding: '24px 16px', display: 'flex', flexDirection: 'column', borderRight: '1px solid rgba(255, 255, 255, 0.1)', 
         justifyContent: 'space-between', height: '100%', boxSizing: 'border-box', boxShadow: '4px 0 24px rgba(15, 23, 42, 0.15)',
         zIndex: 10, transition: 'transform 0.3s ease',
@@ -480,8 +525,8 @@ export default function TalentLink() {
 
         <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', flexShrink: 0 }}>
           <div style={{ display: 'flex', gap: '8px' }}>
-            <button onClick={() => setIsAboutOpen(true)} style={{ flex: 1.3, padding: '10px', background: 'linear-gradient(180deg, rgba(51, 65, 85, 0.6) 0%, rgba(30, 41, 59, 0.8) 100%)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '8px', color: '#ffffff', fontSize: '11px', fontWeight: '700', cursor: 'pointer' }}>About Talent-Link</button>
-            <button onClick={() => setIsContactOpen(true)} style={{ flex: 0.7, padding: '10px', background: 'linear-gradient(180deg, rgba(51, 65, 85, 0.6) 0%, rgba(30, 41, 59, 0.8) 100%)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '8px', color: '#ffffff', fontSize: '11px', fontWeight: '700', cursor: 'pointer' }}>Contact</button>
+            <button onClick={() => setIsAboutOpen(true)} style={{ flex: 1.2, padding: '10px', background: 'linear-gradient(180deg, rgba(51, 65, 85, 0.6) 0%, rgba(30, 41, 59, 0.8) 100%)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '8px', color: '#ffffff', fontSize: '11px', fontWeight: '700', cursor: 'pointer' }}>About Talent-Link</button>
+            <button onClick={() => setIsContactOpen(true)} style={{ flex: 0.8, padding: '10px', background: 'linear-gradient(180deg, rgba(51, 65, 85, 0.6) 0%, rgba(30, 41, 59, 0.8) 100%)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '8px', color: '#ffffff', fontSize: '11px', fontWeight: '700', cursor: 'pointer', whiteSpace: 'nowrap' }}>Contact us</button>
           </div>
           <div style={{ padding: '12px', background: 'rgba(30, 41, 59, 0.5)', border: '1px solid rgba(255,255,255,0.05)', borderRadius: '8px', display: 'flex', alignItems: 'center', gap: '10px' }}>
             <div style={{ width: '10px', height: '10px', backgroundColor: '#22c55e', borderRadius: '50%', boxShadow: '0 0 10px #22c55e' }}></div>
@@ -507,7 +552,7 @@ export default function TalentLink() {
         {/* UPPER STRIP AREA */}
         <div style={{ 
           padding: '16px 20px', borderBottom: '1px solid rgba(15, 23, 42, 0.08)', display: 'flex', alignItems: 'center', 
-          background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0.8) 100%)',
+          background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0.85) 100%)',
           backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)', boxShadow: '0 2px 12px rgba(0, 0, 0, 0.02)', flexShrink: 0
         }}>
           {isMobile && (
@@ -524,7 +569,7 @@ export default function TalentLink() {
               <button onClick={() => setActiveView('dashboard')} style={{ background: 'linear-gradient(135deg, #1e293b 0%, #0f172a 100%)', border: 'none', color: '#ffffff', padding: '6px 14px', borderRadius: '6px', fontSize: '11px', fontWeight: '800', cursor: 'pointer', whiteSpace: 'nowrap' }}>← Hub</button>
             )}
             <div style={{ fontWeight: '900', fontSize: '15px', color: '#0f172a', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-              {activeView === 'dashboard' && '🏢 TALENT-LINK AI OPERATIONAL CENTER'}
+              {activeView === 'dashboard' && '🏢 Operational Control Center'}
               {activeView === 'jd-generation' && '📝 Conversational JD Studio'}
               {activeView === 'match-matrix' && '⚡ Candidate Match Vector'}
             </div>
@@ -539,7 +584,7 @@ export default function TalentLink() {
               <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', marginBottom: '32px' }}>
                 <TalentLinkLogo />
                 <h2 style={{ fontSize: '24px', fontWeight: '900', margin: '14px 0 6px 0', color: '#0f172a', letterSpacing: '-0.5px' }}>Welcome back to Talent-Link Workspace</h2>
-                <p style={{ color: '#475569', margin: 0, fontSize: '14px', fontWeight: '600' }}>Select an active architecture console link below to manage pipeline frameworks.</p>
+                <p style={{ color: '#334155', margin: 0, fontSize: '14px', fontWeight: '700' }}>Select an active architecture console link below to manage pipeline frameworks.</p>
               </div>
 
               {/* INTEGRATED DASHBOARD METRICS SUMMARY */}
@@ -562,9 +607,9 @@ export default function TalentLink() {
 
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '20px' }}>
                 <div style={{ 
-                  background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(248, 250, 252, 0.9) 100%)',
-                  backdropFilter: 'blur(16px)', borderRadius: '16px', border: '1px solid rgba(255,255,255,0.8)', padding: '24px',
-                  boxShadow: '0 12px 40px rgba(15, 23, 42, 0.06)', display: 'flex', flexDirection: 'column', justifyContent: 'space-between'
+                  background: 'linear-gradient(135deg, #ffffff 0%, rgba(248, 250, 252, 0.95) 100%)',
+                  backdropFilter: 'blur(16px)', borderRadius: '16px', border: '1px solid rgba(15,23,42,0.08)', padding: '24px',
+                  boxShadow: '0 12px 40px rgba(15, 23, 42, 0.04)', display: 'flex', flexDirection: 'column', justifyContent: 'space-between'
                 }}>
                   <div>
                     <span style={{ fontSize: '24px', display: 'block', marginBottom: '12px' }}>📝</span>
@@ -582,9 +627,9 @@ export default function TalentLink() {
                 </div>
 
                 <div style={{ 
-                  background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(248, 250, 252, 0.9) 100%)',
-                  backdropFilter: 'blur(16px)', borderRadius: '16px', border: '1px solid rgba(255,255,255,0.8)', padding: '24px',
-                  boxShadow: '0 12px 40px rgba(15, 23, 42, 0.06)', display: 'flex', flexDirection: 'column', justifyContent: 'space-between'
+                  background: 'linear-gradient(135deg, #ffffff 0%, rgba(248, 250, 252, 0.95) 100%)',
+                  backdropFilter: 'blur(16px)', borderRadius: '16px', border: '1px solid rgba(15,23,42,0.08)', padding: '24px',
+                  boxShadow: '0 12px 40px rgba(15, 23, 42, 0.04)', display: 'flex', flexDirection: 'column', justifyContent: 'space-between'
                 }}>
                   <div>
                     <span style={{ fontSize: '24px', display: 'block', marginBottom: '12px' }}>⚡</span>
@@ -610,29 +655,37 @@ export default function TalentLink() {
                 <div key={i} style={{ display: 'flex', justifyContent: m.role === 'user' ? 'flex-end' : 'flex-start', flexShrink: 0 }}>
                   <div style={{ 
                     maxWidth: '85%', padding: '20px', borderRadius: '14px', 
-                    background: m.role === 'user' ? 'linear-gradient(135deg, rgba(248, 250, 252, 0.95) 0%, rgba(241, 245, 249, 0.95) 100%)' : 'linear-gradient(135deg, rgba(255, 255, 255, 0.98) 0%, rgba(250, 250, 250, 0.98) 100%)', 
+                    background: m.role === 'user' ? 'linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(241, 245, 249, 0.9) 100%)' : 'linear-gradient(135deg, rgba(255, 255, 255, 0.98) 0%, rgba(250, 250, 250, 0.95) 100%)', 
                     color: '#0f172a', border: '1px solid rgba(15, 23, 42, 0.08)', boxShadow: '0 8px 32px rgba(15, 23, 42, 0.04)', 
                     backdropFilter: 'blur(8px)', WebkitBackdropFilter: 'blur(8px)', position: 'relative'
                   }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px', gap: '20px' }}>
                       <div style={{ fontSize: '11px', textTransform: 'uppercase', letterSpacing: '1px', color: m.role === 'user' ? '#16a34a' : '#475569', fontWeight: '900' }}>
-                        {m.role === 'user' ? 'Operator Query' : 'Talent-Link AI'}
+                        {m.role === 'user' ? 'Operator Query' : 'Nexus AI'}
                       </div>
-                      <button onClick={() => copyToClipboard(m.content, `top-${i}`)} style={{ background: 'transparent', border: 'none', color: '#64748b', fontSize: '13px', cursor: 'pointer', fontWeight: '800' }}>
+                      <button onClick={() => copyToClipboard(m.content, `top-${i}`)} style={{ background: 'transparent', border: 'none', color: '#64748b', fontSize: '11px', cursor: 'pointer', fontWeight: '800' }}>
                         {copiedId === `top-${i}` ? '✓' : '📋'}
                       </button>
                     </div>
                     
-                    <div>
+                    <div style={{ paddingBottom: m.role === 'assistant' ? '40px' : '0px' }}>
                       {renderFormattedContent(m.content)}
                     </div>
+
+                    {m.role === 'assistant' && (
+                      <div style={{ position: 'absolute', bottom: '12px', right: '12px' }}>
+                        <button type="button" onClick={() => copyToClipboard(m.content, `bottom-${i}`)} style={{ background: 'linear-gradient(180deg, #ffffff 0%, #f1f5f9 100%)', border: '1px solid rgba(15, 23, 42, 0.1)', color: '#334155', fontSize: '10px', cursor: 'pointer', fontWeight: '800', padding: '4px 8px', borderRadius: '6px' }}>
+                          {copiedId === `bottom-${i}` ? '✓ Copied' : '📋 Copy Text'}
+                        </button>
+                      </div>
+                    )}
                   </div>
                 </div>
               ))}
             </div>
             
             <form onSubmit={handleSend} style={{ padding: '16px', borderTop: '1px solid rgba(15, 23, 42, 0.06)', display: 'flex', gap: '10px', background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.8) 0%, rgba(255, 255, 255, 0.95) 100%)', backdropFilter: 'blur(12px)', flexShrink: 0 }}>
-              <input type="text" value={input} onChange={(e) => setInput(e.target.value)} placeholder="Provide requirements to engineer JDs..." style={{ flex: 1, padding: '12px 16px', borderRadius: '10px', border: '1px solid rgba(15, 23, 42, 0.12)', backgroundColor: 'rgba(255, 255, 255, 0.85)', color: '#0f172a', outline: 'none', fontSize: '13.5px', fontWeight: '600' }} />
+              <input type="text" value={input} onChange={(e) => setInput(e.target.value)} placeholder="Provide requirements to engineer JDs..." style={{ flex: 1, padding: '12px 16px', borderRadius: '10px', border: '1px solid rgba(15, 23, 42, 0.12)', backgroundColor: 'rgba(255, 255, 255, 0.95)', color: '#0f172a', outline: 'none', fontSize: '13.5px', fontWeight: '600' }} />
               <button type="submit" style={{ background: 'linear-gradient(135deg, #22c55e 0%, #16a34a 100%)', border: 'none', padding: '0 20px', borderRadius: '10px', color: '#0f172a', fontWeight: '900', fontSize: '13.5px', cursor: 'pointer' }}>
                 {isLoading ? '...' : 'Send'}
               </button>
@@ -641,7 +694,7 @@ export default function TalentLink() {
         ) : (
           <div style={{ flex: 1, display: 'flex', flexDirection: isMobile ? 'column' : 'row', height: '100%', overflow: 'hidden' }}>
             <div style={{ 
-              width: isMobile ? '100%' : '350px', backgroundColor: 'rgba(248, 250, 252, 0.9)', backdropFilter: 'blur(16px)', WebkitBackdropFilter: 'blur(16px)',
+              width: isMobile ? '100%' : '350px', backgroundColor: 'rgba(255, 255, 255, 0.9)', backdropFilter: 'blur(16px)', WebkitBackdropFilter: 'blur(16px)',
               padding: '20px', display: 'flex', flexDirection: 'column', borderRight: '1px solid rgba(15, 23, 42, 0.08)', borderBottom: isMobile ? '1px solid rgba(15, 23, 42, 0.08)' : 'none', boxSizing: 'border-box', flexShrink: 0
             }}>
               <div>
@@ -655,31 +708,20 @@ export default function TalentLink() {
                 placeholder="Paste corporate job description targets here..." 
                 style={{ 
                   width: '100%', height: isMobile ? '120px' : '200px', padding: '12px', borderRadius: '10px', border: '1px solid rgba(15, 23, 42, 0.1)', 
-                  backgroundColor: 'rgba(255, 255, 255, 0.85)', color: '#0f172a', outline: 'none', resize: 'none', boxSizing: 'border-box', 
+                  backgroundColor: 'rgba(255, 255, 255, 0.95)', color: '#0f172a', outline: 'none', resize: 'none', boxSizing: 'border-box', 
                   fontSize: '13px', lineHeight: '1.5', fontWeight: '600', marginBottom: '12px'
                 }} 
               />
 
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                <button 
-                  onClick={handleMatchCandidates} 
-                  style={{ 
-                    width: '100%', background: 'linear-gradient(135deg, #1e293b 0%, #0f172a 100%)', color: '#22c55e', border: '1px solid rgba(255,255,255,0.05)', 
-                    padding: '12px', borderRadius: '10px', fontWeight: '900', fontSize: '13px', cursor: 'pointer', boxShadow: '0 4px 12px rgba(15, 23, 42, 0.15)'
-                  }}
-                >
-                  {isMatching ? 'Processing Vector Analysis...' : '⚡ Generate Matrix'}
-                </button>
-                <button 
-                  onClick={handleResetMatrix} 
-                  style={{ 
-                    width: '100%', background: 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)', color: '#ffffff', border: 'none', 
-                    padding: '10px', borderRadius: '10px', fontWeight: '800', fontSize: '12px', cursor: 'pointer', boxShadow: '0 4px 12px rgba(239, 68, 68, 0.2)'
-                  }}
-                >
-                  ↺ RESET MATCH MATRIX
-                </button>
-              </div>
+              <button 
+                onClick={handleMatchCandidates} 
+                style={{ 
+                  width: '100%', background: 'linear-gradient(135deg, #1e293b 0%, #0f172a 100%)', color: '#22c55e', border: '1px solid rgba(255,255,255,0.05)', 
+                  padding: '12px', borderRadius: '10px', fontWeight: '900', fontSize: '13px', cursor: 'pointer', boxShadow: '0 4px 12px rgba(15, 23, 42, 0.15)'
+                }}
+              >
+                {isMatching ? 'Processing Vector Analysis...' : '⚡ Generate Matrix'}
+              </button>
             </div>
 
             <div style={{ flex: 1, padding: '20px', overflowY: 'auto', boxSizing: 'border-box' }}>

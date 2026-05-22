@@ -348,13 +348,6 @@ export default function TalentLink() {
     }
   };
 
-  const handleResetMatrix = () => {
-    updateCurrentSession({
-      jdInput: '',
-      matchResults: []
-    });
-  };
-
   const copyToClipboard = (text: string, id: number | string) => {
     navigator.clipboard.writeText(text);
     setCopiedId(id);
@@ -457,7 +450,7 @@ export default function TalentLink() {
                         padding: '12px', 
                         background: isActive ? 'linear-gradient(135deg, rgba(34, 197, 94, 0.95) 0%, rgba(22, 163, 74, 0.95) 100%)' : 'transparent', 
                         borderLeft: isActive ? '4px solid #ffffff' : '4px solid transparent', 
-                        color: isActive ? '#0f172a', borderRadius: '0 8px 8px 0', fontSize: '13px', 
+                        color: isActive ? '#0f172a' : '#e2e8f0', borderRadius: '0 8px 8px 0', fontSize: '13px', 
                         fontWeight: isActive ? '900' : '600', cursor: 'pointer',
                         whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis',
                         boxShadow: isActive ? '0 4px 12px rgba(22, 163, 74, 0.2)' : 'none'
@@ -527,7 +520,6 @@ export default function TalentLink() {
 
         {/* WORKSPACE CENTRAL ROUTER VIEWS */}
         {activeView === 'dashboard' ? (
-          
           <div style={{ flex: 1, padding: '30px 20px', overflowY: 'auto', boxSizing: 'border-box' }}>
             <div style={{ maxWidth: '950px', margin: '0 auto' }}>
               
@@ -556,7 +548,6 @@ export default function TalentLink() {
               </div>
 
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '20px' }}>
-                
                 <div style={{ 
                   background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(248, 250, 252, 0.9) 100%)',
                   backdropFilter: 'blur(16px)', borderRadius: '16px', border: '1px solid rgba(255,255,255,0.8)', padding: '24px',
@@ -596,13 +587,10 @@ export default function TalentLink() {
                     Launch Match Sync Engine →
                   </button>
                 </div>
-
               </div>
             </div>
           </div>
-
         ) : activeView === 'jd-generation' ? (
-
           <div style={{ flex: 1, display: 'flex', flexDirection: 'column', height: '100%', overflow: 'hidden' }}>
             <div style={{ flex: 1, padding: '20px', overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '16px' }}>
               {currentSession.messages.map((m, i) => (
@@ -618,7 +606,7 @@ export default function TalentLink() {
                         {m.role === 'user' ? 'Operator Query' : 'Talent-Link AI'}
                       </div>
                       <button onClick={() => copyToClipboard(m.content, `top-${i}`)} style={{ background: 'transparent', border: 'none', color: '#64748b', fontSize: '13px', cursor: 'pointer', fontWeight: '800' }}>
-                        {copiedId === `top-${i}` ? '✓ Copied' : '📋'}
+                        {copiedId === `top-${i}` ? '✓' : '📋'}
                       </button>
                     </div>
                     
@@ -637,11 +625,8 @@ export default function TalentLink() {
               </button>
             </form>
           </div>
-
         ) : (
-
           <div style={{ flex: 1, display: 'flex', flexDirection: isMobile ? 'column' : 'row', height: '100%', overflow: 'hidden' }}>
-            
             <div style={{ 
               width: isMobile ? '100%' : '350px', backgroundColor: 'rgba(248, 250, 252, 0.85)', backdropFilter: 'blur(16px)', WebkitBackdropFilter: 'blur(16px)',
               padding: '20px', display: 'flex', flexDirection: 'column', borderRight: '1px solid rgba(15, 23, 42, 0.08)', borderBottom: isMobile ? '1px solid rgba(15, 23, 42, 0.08)' : 'none', boxSizing: 'border-box', flexShrink: 0
@@ -662,27 +647,15 @@ export default function TalentLink() {
                 }} 
               />
 
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                <button 
-                  onClick={handleMatchCandidates} 
-                  style={{ 
-                    width: '100%', background: 'linear-gradient(135deg, #1e293b 0%, #0f172a 100%)', color: '#22c55e', border: '1px solid rgba(255,255,255,0.05)', 
-                    padding: '12px', borderRadius: '10px', fontWeight: '900', fontSize: '13px', cursor: 'pointer', boxShadow: '0 4px 12px rgba(15, 23, 42, 0.15)'
-                  }}
-                >
-                  {isMatching ? 'Processing Vector Analysis...' : '⚡ Generate Matrix'}
-                </button>
-                <button 
-                  onClick={handleResetMatrix}
-                  type="button"
-                  style={{ 
-                    width: '100%', background: 'rgba(239, 68, 68, 0.1)', color: '#ef4444', border: '1px solid rgba(239, 68, 68, 0.2)', 
-                    padding: '10px', borderRadius: '10px', fontWeight: '800', fontSize: '12px', cursor: 'pointer'
-                  }}
-                >
-                  🔄 Reset Matrix Data
-                </button>
-              </div>
+              <button 
+                onClick={handleMatchCandidates} 
+                style={{ 
+                  width: '100%', background: 'linear-gradient(135deg, #1e293b 0%, #0f172a 100%)', color: '#22c55e', border: '1px solid rgba(255,255,255,0.05)', 
+                  padding: '12px', borderRadius: '10px', fontWeight: '900', fontSize: '13px', cursor: 'pointer', boxShadow: '0 4px 12px rgba(15, 23, 42, 0.15)'
+                }}
+              >
+                {isMatching ? 'Processing Vector Analysis...' : '⚡ Generate Matrix'}
+              </button>
             </div>
 
             <div style={{ flex: 1, padding: '20px', overflowY: 'auto', boxSizing: 'border-box' }}>
@@ -704,7 +677,6 @@ export default function TalentLink() {
                 ))
               )}
             </div>
-
           </div>
         )}
       </div>

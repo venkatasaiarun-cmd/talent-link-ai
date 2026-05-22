@@ -702,7 +702,7 @@ export default function TalentLink() {
                     {/* RESET MATCH MATRIX BUTTON */}
                     <button 
                       onClick={handleResetMatchMatrix}
-                      style={{ width: '100%', background: '#ef4444', color: '#ffffff', border: 'none', padding: '10px', borderRadius: '8px', fontWeight: '800', fontSize: '12px', cursor: 'pointer', trackingLetter: '0.5px' }}
+                      style={{ width: '100%', background: '#ef4444', color: '#ffffff', border: 'none', padding: '10px', borderRadius: '8px', fontWeight: '800', fontSize: '12px', cursor: 'pointer', letterSpacing: '0.5px' }}
                     >
                       RESET MATCH MATRIX
                     </button>

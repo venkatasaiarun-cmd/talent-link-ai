@@ -148,7 +148,7 @@ export default function TalentLink() {
         padding: 0 !important;
         height: 100% !important;
         width: 100% !important;
-        background-color: #ffffff;
+        background-color: #f8fafc;
       }
       ::-webkit-scrollbar { width: 6px; }
       ::-webkit-scrollbar-track { background: transparent; }
@@ -200,11 +200,10 @@ export default function TalentLink() {
     const draw = () => {
       ctx.clearRect(0, 0, width, height);
       
-      // Significantly brighter background canvas filling logic to improve contrast
       const gradient = ctx.createLinearGradient(0, 0, width, height);
-      gradient.addColorStop(0, '#ffffff');
-      gradient.addColorStop(0.5, '#fdfdfd');
-      gradient.addColorStop(1, '#f1f5f9');
+      gradient.addColorStop(0, '#f1f5f9');
+      gradient.addColorStop(0.5, '#f8fafc');
+      gradient.addColorStop(1, '#e2e8f0');
       ctx.fillStyle = gradient;
       ctx.fillRect(0, 0, width, height);
 
@@ -215,7 +214,7 @@ export default function TalentLink() {
             ctx.beginPath();
             ctx.moveTo(items[i].x, items[i].y);
             ctx.lineTo(items[j].x, items[j].y);
-            const alpha = (1 - dist / 200) * 0.12;
+            const alpha = (1 - dist / 200) * 0.15;
             ctx.strokeStyle = `rgba(30, 41, 59, ${alpha})`;
             ctx.lineWidth = 0.8;
             ctx.stroke();
@@ -235,7 +234,7 @@ export default function TalentLink() {
         ctx.translate(item.x, item.y);
         ctx.beginPath();
         ctx.arc(0, 0, item.type === 0 ? item.radius : item.radius + 1, 0, Math.PI * 2);
-        ctx.fillStyle = item.type === 0 ? 'rgba(15, 23, 42, 0.2)' : 'rgba(34, 197, 94, 0.45)';
+        ctx.fillStyle = item.type === 0 ? 'rgba(15, 23, 42, 0.25)' : 'rgba(34, 197, 94, 0.45)';
         ctx.fill();
         ctx.restore();
       });
@@ -357,7 +356,7 @@ export default function TalentLink() {
   };
 
   if (!mounted) {
-    return <div style={{ minHeight: '100vh', backgroundColor: '#ffffff' }} />;
+    return <div style={{ minHeight: '100vh', backgroundColor: '#f8fafc' }} />;
   }
 
   const TalentLinkLogo = () => (
@@ -393,7 +392,7 @@ export default function TalentLink() {
             <h3 style={{ margin: '0 0 12px 0', fontSize: '18px', fontWeight: '900', color: '#0f172a', display: 'flex', alignItems: 'center', gap: '8px' }}>
               ℹ️ About Talent-Link AI
             </h3>
-            <p style={{ fontSize: '14px', color: '#334155', lineHeight: '1.6', margin: '0 0 20px 0', fontWeight: '600' }}>
+            <p style={{ fontSize: '14px', color: '#334155', lineHeight: '1.6', margin: '0 0 20px 0', fontWeight: '500' }}>
               Talent-Link is an intelligent recruitment orchestration pipeline designed to bridge communication gaps in human capital sourcing. By utilizing structured contextual language vectors, it accelerates compliant job description engineering and simplifies resume alignment processes within an integrated single control center workspace environment.
             </p>
             <button 
@@ -438,7 +437,7 @@ export default function TalentLink() {
 
       {/* LEFT SIDEBAR */}
       <div style={{ 
-        width: '300px', backgroundColor: 'rgba(15, 23, 42, 0.94)', backdropFilter: 'blur(16px)', WebkitBackdropFilter: 'blur(16px)',
+        width: '300px', backgroundColor: 'rgba(15, 23, 42, 0.92)', backdropFilter: 'blur(16px)', WebkitBackdropFilter: 'blur(16px)',
         padding: '24px 16px', display: 'flex', flexDirection: 'column', borderRight: '1px solid rgba(255, 255, 255, 0.1)', 
         justifyContent: 'space-between', height: '100%', boxSizing: 'border-box', boxShadow: '4px 0 24px rgba(15, 23, 42, 0.15)',
         zIndex: 10, transition: 'transform 0.3s ease',
@@ -552,7 +551,7 @@ export default function TalentLink() {
         {/* UPPER STRIP AREA */}
         <div style={{ 
           padding: '16px 20px', borderBottom: '1px solid rgba(15, 23, 42, 0.08)', display: 'flex', alignItems: 'center', 
-          background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0.85) 100%)',
+          background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0.75) 100%)',
           backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)', boxShadow: '0 2px 12px rgba(0, 0, 0, 0.02)', flexShrink: 0
         }}>
           {isMobile && (
@@ -569,7 +568,7 @@ export default function TalentLink() {
               <button onClick={() => setActiveView('dashboard')} style={{ background: 'linear-gradient(135deg, #1e293b 0%, #0f172a 100%)', border: 'none', color: '#ffffff', padding: '6px 14px', borderRadius: '6px', fontSize: '11px', fontWeight: '800', cursor: 'pointer', whiteSpace: 'nowrap' }}>← Hub</button>
             )}
             <div style={{ fontWeight: '900', fontSize: '15px', color: '#0f172a', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-              {activeView === 'dashboard' && '🏢 Operational Control Center'}
+              {activeView === 'dashboard' && '🏢 TALENT-LINK AI OPERATIONAL CENTER'}
               {activeView === 'jd-generation' && '📝 Conversational JD Studio'}
               {activeView === 'match-matrix' && '⚡ Candidate Match Vector'}
             </div>
@@ -584,7 +583,7 @@ export default function TalentLink() {
               <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', marginBottom: '32px' }}>
                 <TalentLinkLogo />
                 <h2 style={{ fontSize: '24px', fontWeight: '900', margin: '14px 0 6px 0', color: '#0f172a', letterSpacing: '-0.5px' }}>Welcome back to Talent-Link Workspace</h2>
-                <p style={{ color: '#334155', margin: 0, fontSize: '14px', fontWeight: '700' }}>Select an active architecture console link below to manage pipeline frameworks.</p>
+                <p style={{ color: '#475569', margin: 0, fontSize: '14px', fontWeight: '600' }}>Select an active architecture console link below to manage pipeline frameworks.</p>
               </div>
 
               {/* INTEGRATED DASHBOARD METRICS SUMMARY */}
@@ -607,9 +606,9 @@ export default function TalentLink() {
 
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '20px' }}>
                 <div style={{ 
-                  background: 'linear-gradient(135deg, #ffffff 0%, rgba(248, 250, 252, 0.95) 100%)',
-                  backdropFilter: 'blur(16px)', borderRadius: '16px', border: '1px solid rgba(15,23,42,0.08)', padding: '24px',
-                  boxShadow: '0 12px 40px rgba(15, 23, 42, 0.04)', display: 'flex', flexDirection: 'column', justifyContent: 'space-between'
+                  background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(248, 250, 252, 0.9) 100%)',
+                  backdropFilter: 'blur(16px)', borderRadius: '16px', border: '1px solid rgba(255,255,255,0.8)', padding: '24px',
+                  boxShadow: '0 12px 40px rgba(15, 23, 42, 0.06)', display: 'flex', flexDirection: 'column', justifyContent: 'space-between'
                 }}>
                   <div>
                     <span style={{ fontSize: '24px', display: 'block', marginBottom: '12px' }}>📝</span>
@@ -627,9 +626,9 @@ export default function TalentLink() {
                 </div>
 
                 <div style={{ 
-                  background: 'linear-gradient(135deg, #ffffff 0%, rgba(248, 250, 252, 0.95) 100%)',
-                  backdropFilter: 'blur(16px)', borderRadius: '16px', border: '1px solid rgba(15,23,42,0.08)', padding: '24px',
-                  boxShadow: '0 12px 40px rgba(15, 23, 42, 0.04)', display: 'flex', flexDirection: 'column', justifyContent: 'space-between'
+                  background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(248, 250, 252, 0.9) 100%)',
+                  backdropFilter: 'blur(16px)', borderRadius: '16px', border: '1px solid rgba(255,255,255,0.8)', padding: '24px',
+                  boxShadow: '0 12px 40px rgba(15, 23, 42, 0.06)', display: 'flex', flexDirection: 'column', justifyContent: 'space-between'
                 }}>
                   <div>
                     <span style={{ fontSize: '24px', display: 'block', marginBottom: '12px' }}>⚡</span>
@@ -655,7 +654,7 @@ export default function TalentLink() {
                 <div key={i} style={{ display: 'flex', justifyContent: m.role === 'user' ? 'flex-end' : 'flex-start', flexShrink: 0 }}>
                   <div style={{ 
                     maxWidth: '85%', padding: '20px', borderRadius: '14px', 
-                    background: m.role === 'user' ? 'linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(241, 245, 249, 0.9) 100%)' : 'linear-gradient(135deg, rgba(255, 255, 255, 0.98) 0%, rgba(250, 250, 250, 0.95) 100%)', 
+                    background: m.role === 'user' ? 'linear-gradient(135deg, rgba(248, 250, 252, 0.9) 0%, rgba(241, 245, 249, 0.9) 100%)' : 'linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(250, 250, 250, 0.9) 100%)', 
                     color: '#0f172a', border: '1px solid rgba(15, 23, 42, 0.08)', boxShadow: '0 8px 32px rgba(15, 23, 42, 0.04)', 
                     backdropFilter: 'blur(8px)', WebkitBackdropFilter: 'blur(8px)', position: 'relative'
                   }}>
@@ -684,8 +683,8 @@ export default function TalentLink() {
               ))}
             </div>
             
-            <form onSubmit={handleSend} style={{ padding: '16px', borderTop: '1px solid rgba(15, 23, 42, 0.06)', display: 'flex', gap: '10px', background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.8) 0%, rgba(255, 255, 255, 0.95) 100%)', backdropFilter: 'blur(12px)', flexShrink: 0 }}>
-              <input type="text" value={input} onChange={(e) => setInput(e.target.value)} placeholder="Provide requirements to engineer JDs..." style={{ flex: 1, padding: '12px 16px', borderRadius: '10px', border: '1px solid rgba(15, 23, 42, 0.12)', backgroundColor: 'rgba(255, 255, 255, 0.95)', color: '#0f172a', outline: 'none', fontSize: '13.5px', fontWeight: '600' }} />
+            <form onSubmit={handleSend} style={{ padding: '16px', borderTop: '1px solid rgba(15, 23, 42, 0.06)', display: 'flex', gap: '10px', background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.75) 0%, rgba(255, 255, 255, 0.9) 100%)', backdropFilter: 'blur(12px)', flexShrink: 0 }}>
+              <input type="text" value={input} onChange={(e) => setInput(e.target.value)} placeholder="Provide requirements to engineer JDs..." style={{ flex: 1, padding: '12px 16px', borderRadius: '10px', border: '1px solid rgba(15, 23, 42, 0.12)', backgroundColor: 'rgba(255, 255, 255, 0.8)', color: '#0f172a', outline: 'none', fontSize: '13.5px', fontWeight: '600' }} />
               <button type="submit" style={{ background: 'linear-gradient(135deg, #22c55e 0%, #16a34a 100%)', border: 'none', padding: '0 20px', borderRadius: '10px', color: '#0f172a', fontWeight: '900', fontSize: '13.5px', cursor: 'pointer' }}>
                 {isLoading ? '...' : 'Send'}
               </button>
@@ -694,7 +693,7 @@ export default function TalentLink() {
         ) : (
           <div style={{ flex: 1, display: 'flex', flexDirection: isMobile ? 'column' : 'row', height: '100%', overflow: 'hidden' }}>
             <div style={{ 
-              width: isMobile ? '100%' : '350px', backgroundColor: 'rgba(255, 255, 255, 0.9)', backdropFilter: 'blur(16px)', WebkitBackdropFilter: 'blur(16px)',
+              width: isMobile ? '100%' : '350px', backgroundColor: 'rgba(248, 250, 252, 0.85)', backdropFilter: 'blur(16px)', WebkitBackdropFilter: 'blur(16px)',
               padding: '20px', display: 'flex', flexDirection: 'column', borderRight: '1px solid rgba(15, 23, 42, 0.08)', borderBottom: isMobile ? '1px solid rgba(15, 23, 42, 0.08)' : 'none', boxSizing: 'border-box', flexShrink: 0
             }}>
               <div>
@@ -708,7 +707,7 @@ export default function TalentLink() {
                 placeholder="Paste corporate job description targets here..." 
                 style={{ 
                   width: '100%', height: isMobile ? '120px' : '200px', padding: '12px', borderRadius: '10px', border: '1px solid rgba(15, 23, 42, 0.1)', 
-                  backgroundColor: 'rgba(255, 255, 255, 0.95)', color: '#0f172a', outline: 'none', resize: 'none', boxSizing: 'border-box', 
+                  backgroundColor: 'rgba(255, 255, 255, 0.75)', color: '#0f172a', outline: 'none', resize: 'none', boxSizing: 'border-box', 
                   fontSize: '13px', lineHeight: '1.5', fontWeight: '600', marginBottom: '12px'
                 }} 
               />
@@ -729,7 +728,7 @@ export default function TalentLink() {
                 Compliance Engine Output Matrix
               </div>
               {currentSession.matchResults.length === 0 ? (
-                <div style={{ padding: '30px', textAlign: 'center', background: 'rgba(255,255,255,0.6)', borderRadius: '12px', border: '1px dashed rgba(15,23,42,0.1)', color: '#64748b', fontSize: '13px', fontWeight: '600' }}>
+                <div style={{ padding: '30px', textAlign: 'center', background: 'rgba(255,255,255,0.5)', borderRadius: '12px', border: '1px dashed rgba(15,23,42,0.1)', color: '#64748b', fontSize: '13px', fontWeight: '600' }}>
                   No vector metrics compiled yet. Submit parameters to load syncing models.
                 </div>
               ) : (

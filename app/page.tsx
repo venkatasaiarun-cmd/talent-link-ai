@@ -671,7 +671,7 @@ export default function TalentLink() {
                     padding: '10px', borderRadius: '10px', fontWeight: '800', fontSize: '12px', cursor: 'pointer', boxShadow: '0 4px 12px rgba(239, 68, 68, 0.2)'
                   }}
                 >
-                  ↺ Reset Matrix
+                  ↺ RESET MATCH MATRIX
                 </button>
               </div>
             </div>

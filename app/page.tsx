@@ -17,7 +17,6 @@ interface ChatSession {
 
 export default function TalentLink() {
   const [mounted, setMounted] = useState(false);
-  const [copiedId, setCopiedId] = useState<number | string | null>(null);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -348,12 +347,6 @@ export default function TalentLink() {
     }
   };
 
-  const copyToClipboard = (text: string, id: number | string) => {
-    navigator.clipboard.writeText(text);
-    setCopiedId(id);
-    setTimeout(() => setCopiedId(null), 2000);
-  };
-
   if (!mounted) {
     return <div style={{ minHeight: '100vh', backgroundColor: '#f8fafc' }} />;
   }
@@ -612,17 +605,9 @@ export default function TalentLink() {
                       </div>
                     </div>
                     
-                    <div style={{ paddingBottom: m.role === 'assistant' ? '40px' : '0px' }}>
+                    <div>
                       {renderFormattedContent(m.content)}
                     </div>
-
-                    {m.role === 'assistant' && (
-                      <div style={{ position: 'absolute', bottom: '12px', right: '12px' }}>
-                        <button type="button" onClick={() => copyToClipboard(m.content, `bottom-${i}`)} style={{ background: 'linear-gradient(180deg, #ffffff 0%, #f1f5f9 100%)', border: '1px solid rgba(15, 23, 42, 0.1)', color: '#334155', fontSize: '10px', cursor: 'pointer', fontWeight: '800', padding: '4px 8px', borderRadius: '6px' }}>
-                          {copiedId === `bottom-${i}` ? '✓ Copied' : '📋 Copy Text'}
-                        </button>
-                      </div>
-                    )}
                   </div>
                 </div>
               ))}

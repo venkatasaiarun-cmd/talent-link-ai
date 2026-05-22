@@ -20,10 +20,11 @@ export default function TalentLink() {
   const [copiedId, setCopiedId] = useState<number | string | null>(null);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   
-  // Mobile Responsiveness Toggle
+  // Mobile Responsiveness Tracking State safely initialized
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
 
-  // Navigation State: 'dashboard' | 'jd-generation' | 'match-matrix'
+  // Navigation State
   const [activeView, setActiveView] = useState<'dashboard' | 'jd-generation' | 'match-matrix'>('dashboard');
 
   // Modal states
@@ -54,7 +55,6 @@ export default function TalentLink() {
     }
   ]);
 
-  // Active session router based on chosen workspace view
   const [activeJdId, setActiveJdId] = useState<string>('default-jd');
   const [activeMatrixId, setActiveMatrixId] = useState<string>('default-matrix');
 
@@ -66,13 +66,19 @@ export default function TalentLink() {
   const [isLoading, setIsLoading] = useState(false);
   const [isMatching, setIsMatching] = useState(false);
 
-  // Dynamic Database Counter States
   const [totalVacancies, setTotalVacancies] = useState<number>(12); 
   const [appliedCandidates, setAppliedCandidates] = useState<number>(48);
 
-  // Global style injection for glassy visual properties and thin custom scrollbars
   useEffect(() => {
     setMounted(true);
+    
+    // Safely check mobile size on mount and window resize
+    const checkMobileSize = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+    
+    checkMobileSize();
+    window.addEventListener('resize', checkMobileSize);
     
     const style = document.createElement("style");
     style.innerHTML = `
@@ -190,11 +196,11 @@ export default function TalentLink() {
     return () => {
       cancelAnimationFrame(animationFrameId);
       window.removeEventListener('resize', handleResize);
+      window.removeEventListener('resize', checkMobileSize);
       document.head.removeChild(style);
     };
   }, []);
 
-  // Sync metrics counters dynamically based on state changes
   useEffect(() => {
     const activeJdsCount = sessions.filter(s => s.jdInput.trim().length > 0).length;
     setTotalVacancies(10 + activeJdsCount);
@@ -336,7 +342,7 @@ export default function TalentLink() {
     }}>
       <canvas ref={canvasRef} style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', zIndex: 0, pointerEvents: 'none' }} />
 
-      {/* LEFT SIDEBAR (Hidden on mobile unless active via absolute layout) */}
+      {/* LEFT SIDEBAR */}
       <div style={{ 
         width: '300px', 
         backgroundColor: 'rgba(15, 23, 42, 0.92)', 
@@ -351,25 +357,20 @@ export default function TalentLink() {
         boxSizing: 'border-box',
         boxShadow: '4px 0 24px rgba(15, 23, 42, 0.15)',
         zIndex: 10,
-        position: 'relative',
         transition: 'transform 0.3s ease',
-        transform: typeof window !== 'undefined' && window.innerWidth <= 768 
-          ? (isSidebarOpen ? 'translateX(0)' : 'translateX(-100%)') 
-          : 'none',
-        left: typeof window !== 'undefined' && window.innerWidth <= 768 ? 0 : 'auto',
-        top: typeof window !== 'undefined' && window.innerWidth <= 768 ? 0 : 'auto',
-        position: typeof window !== 'undefined' && window.innerWidth <= 768 ? 'absolute' : 'relative',
+        transform: isMobile ? (isSidebarOpen ? 'translateX(0)' : 'translateX(-100%)') : 'none',
+        left: 0,
+        top: 0,
+        position: isMobile ? 'absolute' : 'relative',
       }}>
         <div style={{ display: 'flex', flexDirection: 'column', height: 'calc(100% - 140px)', overflow: 'hidden' }}>
           
-          {/* CORE HEADER BRAND BLOCK LOGO INTEGRATION */}
           <div onClick={() => { setActiveView('dashboard'); setIsSidebarOpen(false); }} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginBottom: '28px', textAlign: 'center', flexShrink: 0, cursor: 'pointer' }}>
             <TalentLinkLogo />
             <h1 style={{ fontSize: '19px', margin: '10px 0 0 0', fontWeight: '900', letterSpacing: '1.5px', color: '#ffffff', textShadow: '0 2px 4px rgba(0,0,0,0.3)' }}>TALENT-LINK</h1>
             <span style={{ fontSize: '11px', color: '#22c55e', marginTop: '4px', fontWeight: '800', letterSpacing: '0.5px' }}>Connect. Hire. Grow.</span>
           </div>
 
-          {/* MAIN APPLICATION CONSOLE SECTIONS */}
           <span style={{ fontSize: '11px', color: '#94a3b8', fontWeight: '800', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '8px', paddingLeft: '6px' }}>Workspaces</span>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', marginBottom: '24px', flexShrink: 0 }}>
             <button 
@@ -404,7 +405,6 @@ export default function TalentLink() {
             </button>
           </div>
 
-          {/* CHAT CHRONOLOGY INDEX FLOW */}
           {activeView !== 'dashboard' && (
             <>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px', padding: '0 6px' }}>
@@ -444,7 +444,6 @@ export default function TalentLink() {
           )}
         </div>
 
-        {/* BOTTOM GLOBAL MODAL ACTIONS CONTAINER */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', flexShrink: 0 }}>
           <div style={{ display: 'flex', gap: '8px' }}>
             <button onClick={() => setIsAboutOpen(true)} style={{ flex: 1.3, padding: '10px', background: 'linear-gradient(180deg, rgba(51, 65, 85, 0.6) 0%, rgba(30, 41, 59, 0.8) 100%)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '8px', color: '#ffffff', fontSize: '11px', fontWeight: '700', cursor: 'pointer' }}>About Talent-Link</button>
@@ -460,8 +459,8 @@ export default function TalentLink() {
         </div>
       </div>
 
-      {/* MOBILE TRANSPARENT BACKDROP SHIELD */}
-      {isSidebarOpen && (
+      {/* MOBILE BACKDROP LAYER */}
+      {isMobile && isSidebarOpen && (
         <div 
           onClick={() => setIsSidebarOpen(false)} 
           style={{
@@ -474,7 +473,7 @@ export default function TalentLink() {
       {/* CENTER WORKSPACE FRAME TERMINAL HUB */}
       <div style={{ flex: 1, display: 'flex', flexDirection: 'column', height: '100%', backgroundColor: 'transparent', position: 'relative', zIndex: 1, overflow: 'hidden' }}>
         
-        {/* UPPER GLASS STRIP BAR AREA (Clean and Simplified) */}
+        {/* UPPER STRIP AREA */}
         <div style={{ 
           padding: '16px 20px', 
           borderBottom: '1px solid rgba(15, 23, 42, 0.08)', 
@@ -484,17 +483,17 @@ export default function TalentLink() {
           backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)',
           boxShadow: '0 2px 12px rgba(0, 0, 0, 0.02)', flexShrink: 0
         }}>
-          {/* Mobile Hamburg Navigation Button */}
-          <button 
-            onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-            style={{
-              background: '#1e293b', border: 'none', color: '#ffffff', padding: '8px 12px', 
-              borderRadius: '6px', marginRight: '12px', cursor: 'pointer', display: 'block'
-            }}
-            className="mobile-nav-toggle"
-          >
-            ☰
-          </button>
+          {isMobile && (
+            <button 
+              onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+              style={{
+                background: '#1e293b', border: 'none', color: '#ffffff', padding: '8px 12px', 
+                borderRadius: '6px', marginRight: '12px', cursor: 'pointer'
+              }}
+            >
+              ☰
+            </button>
+          )}
 
           <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flex: 1, minWidth: 0 }}>
             {activeView !== 'dashboard' && (
@@ -511,7 +510,6 @@ export default function TalentLink() {
         {/* WORKSPACE CENTRAL ROUTER VIEWS */}
         {activeView === 'dashboard' ? (
           
-          /* OPTION A: RE-STRUCTURED DASHBOARD HUB HOMEPAGE WITH DETAILED METRICS ADDED */
           <div style={{ flex: 1, padding: '30px 20px', overflowY: 'auto', boxSizing: 'border-box' }}>
             <div style={{ maxWidth: '950px', margin: '0 auto' }}>
               
@@ -521,7 +519,7 @@ export default function TalentLink() {
                 <p style={{ color: '#475569', margin: 0, fontSize: '14px', fontWeight: '600' }}>Select an active architecture console link below to manage pipeline frameworks.</p>
               </div>
 
-              {/* INTEGRATED DASHBOARD COMPONENT CARD */}
+              {/* INTEGRATED DASHBOARD METRICS SUMMARY */}
               <div style={{
                 background: 'linear-gradient(135deg, #0f172a 0%, #1e293b 100%)',
                 borderRadius: '16px', padding: '24px', marginBottom: '30px', color: '#ffffff',
@@ -542,7 +540,6 @@ export default function TalentLink() {
 
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '20px' }}>
                 
-                {/* STUDIO MATRIX CARD A: JD GENERATION CO-PILOT */}
                 <div style={{ 
                   background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(248, 250, 252, 0.9) 100%)',
                   backdropFilter: 'blur(16px)', borderRadius: '16px', border: '1px solid rgba(255,255,255,0.8)', padding: '24px',
@@ -563,7 +560,6 @@ export default function TalentLink() {
                   </button>
                 </div>
 
-                {/* STUDIO MATRIX CARD B: MATRIX VECTOR ALIGNER */}
                 <div style={{ 
                   background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(248, 250, 252, 0.9) 100%)',
                   backdropFilter: 'blur(16px)', borderRadius: '16px', border: '1px solid rgba(255,255,255,0.8)', padding: '24px',
@@ -590,7 +586,6 @@ export default function TalentLink() {
 
         ) : activeView === 'jd-generation' ? (
 
-          /* OPTION B: CHAT SUITE INTERACTIVE CONSOLE FOR JD GENERATION */
           <div style={{ flex: 1, display: 'flex', flexDirection: 'column', height: '100%', overflow: 'hidden' }}>
             <div style={{ flex: 1, padding: '20px', overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '16px' }}>
               {currentSession.messages.map((m, i) => (
@@ -632,14 +627,12 @@ export default function TalentLink() {
 
         ) : (
 
-          /* OPTION C: DESIGNATED LAB FOR CANDIDATE MATCH MATRIX ONLY (Responsive Stacked Grid) */
-          <div style={{ flex: 1, display: 'flex', flexDirection: typeof window !== 'undefined' && window.innerWidth <= 768 ? 'column' : 'row', height: '100%', overflow: 'hidden' }}>
+          <div style={{ flex: 1, display: 'flex', flexDirection: isMobile ? 'column' : 'row', height: '100%', overflow: 'hidden' }}>
             
-            {/* INPUT MATRIX CONTROL BOX COLUMN */}
             <div style={{ 
-              width: typeof window !== 'undefined' && window.innerWidth <= 768 ? '100%' : '350px', 
+              width: isMobile ? '100%' : '350px', 
               backgroundColor: 'rgba(248, 250, 252, 0.85)', backdropFilter: 'blur(16px)', WebkitBackdropFilter: 'blur(16px)',
-              padding: '20px', display: 'flex', flexDirection: 'column', borderRight: '1px solid rgba(15, 23, 42, 0.08)', borderBottom: typeof window !== 'undefined' && window.innerWidth <= 768 ? '1px solid rgba(15, 23, 42, 0.08)' : 'none', boxSizing: 'border-box', flexShrink: 0
+              padding: '20px', display: 'flex', flexDirection: 'column', borderRight: '1px solid rgba(15, 23, 42, 0.08)', borderBottom: isMobile ? '1px solid rgba(15, 23, 42, 0.08)' : 'none', boxSizing: 'border-box', flexShrink: 0
             }}>
               <div>
                 <h2 style={{ fontSize: '15px', margin: '0 0 4px 0', fontWeight: '900', color: '#0f172a' }}>Job Spec Parameters</h2>
@@ -651,7 +644,7 @@ export default function TalentLink() {
                 onChange={(e) => updateCurrentSession({ jdInput: e.target.value })} 
                 placeholder="Paste corporate job description targets here..." 
                 style={{ 
-                  width: '100%', height: typeof window !== 'undefined' && window.innerWidth <= 768 ? '120px' : '200px', padding: '12px', borderRadius: '10px', border: '1px solid rgba(15, 23, 42, 0.1)', 
+                  width: '100%', height: isMobile ? '120px' : '200px', padding: '12px', borderRadius: '10px', border: '1px solid rgba(15, 23, 42, 0.1)', 
                   backgroundColor: 'rgba(255, 255, 255, 0.75)', color: '#0f172a', outline: 'none', resize: 'none', boxSizing: 'border-box', 
                   fontSize: '13px', lineHeight: '1.5', fontWeight: '600', marginBottom: '12px'
                 }} 
@@ -668,7 +661,6 @@ export default function TalentLink() {
               </button>
             </div>
 
-            {/* RESULTS MATRIX FLOW LAYER */}
             <div style={{ flex: 1, padding: '20px', overflowY: 'auto', boxSizing: 'border-box' }}>
               <div style={{ fontSize: '11px', textTransform: 'uppercase', letterSpacing: '1px', color: '#64748b', fontWeight: '900', marginBottom: '16px' }}>
                 Compliance Engine Output Matrix

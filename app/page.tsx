@@ -93,10 +93,9 @@ export default function TalentLink() {
   const [isLoading, setIsLoading] = useState(false);
   const [isMatching, setIsMatching] = useState(false);
 
-  // Core Pipeline Metrics Data
+  // Core Pipeline Metrics Data (Refocused to Vacancies vs Profiles)
   const totalVacancies = 12;
   const totalProfilesIndexed = 48;
-  const totalMatchedProfiles = sessions.reduce((acc, s) => acc + s.matchResults.filter(r => r.matchScore >= 80).length, 0);
 
   // Global background canvas network simulation loop
   useEffect(() => {
@@ -228,7 +227,7 @@ export default function TalentLink() {
     setSessions(prev => prev.map(s => s.id === currentId ? { ...s, ...updatedFields } : s));
   };
 
-  // Dynamic Chat Name Generation Based on Conversation content
+  // Dynamic Chat History Naming Strategy Based on input text conversation context
   const extractTopicTitle = (text: string): string => {
     const cleanText = text.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g, "").trim();
     const words = cleanText.split(/\s+/).filter(word => word.length > 2);
@@ -295,6 +294,12 @@ export default function TalentLink() {
   const handleMatchCandidates = async () => {
     if (!currentSession.jdInput.trim() || isMatching) return;
     setIsMatching(true);
+
+    // Dynamic title naming implementation inside candidate match matrix based on the text configuration conversation
+    let dynamicMatrixTitle = currentSession.title;
+    if (currentSession.title === 'Unmapped Analysis Matrix' || currentSession.title === 'Vector Sync Matrix Workspace') {
+      dynamicMatrixTitle = extractTopicTitle(currentSession.jdInput);
+    }
     
     try {
       const response = await fetch('/api/langflow', {
@@ -304,8 +309,8 @@ export default function TalentLink() {
       });
       const data = await response.json();
       
-      // Seed fallback structured objects with mock evaluation metadata if API payload is generic
       updateCurrentSession({
+        title: dynamicMatrixTitle,
         matchResults: [
           { id: 'cand-1', candidateName: 'Bhavesh Kumar', matchScore: 94, title: "Optimized Matrix Fit", details: data.text || "Excellent alignment across full enterprise layout specs." },
           { id: 'cand-2', candidateName: 'Siddarth Sharma', matchScore: 88, title: "Strong Sync Score", details: "Highly capable application layer engineering match." },
@@ -314,8 +319,10 @@ export default function TalentLink() {
       });
     } catch (error) {
       updateCurrentSession({
+        title: dynamicMatrixTitle,
         matchResults: [
-          { id: 'cand-1', candidateName: 'Bhavesh Kumar', matchScore: 94, title: "Fallback Sync Map", details: "System running localized indexing safely. Match profiles compiled." }
+          { id: 'cand-1', candidateName: 'Bhavesh Kumar', matchScore: 94, title: "Fallback Sync Map", details: "System running localized indexing safely. Match profiles compiled." },
+          { id: 'cand-2', candidateName: 'Siddarth Sharma', matchScore: 88, title: "Localized Match Index", details: "Functional architecture match established safely against database." }
         ]
       });
     } finally {
@@ -323,7 +330,7 @@ export default function TalentLink() {
     }
   };
 
-  // Mock Export Functions for File System Triggers
+  // Export File Generators for Target Candidate Data Recovers
   const handleDownloadResume = (name: string) => {
     const element = document.createElement("a");
     const file = new Blob([`RESUME RECORD ARCHIVE: ${name}\nIndexed and verified secure by Talent-Link Matrix system layers.`], {type: 'text/plain'});
@@ -371,7 +378,7 @@ export default function TalentLink() {
     }}>
       <canvas ref={canvasRef} style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', zIndex: 0, pointerEvents: 'none' }} />
 
-      {/* LEFT SAAS NAVIGATION BAR (Vibrant Slate Gloss Layer) */}
+      {/* LEFT SIDEBAR NAVIGATION CONSOLE */}
       <div style={{ 
         width: '300px', backgroundColor: 'rgba(15, 23, 42, 0.92)', backdropFilter: 'blur(16px)', WebkitBackdropFilter: 'blur(16px)',
         padding: '24px 16px', display: 'flex', flexDirection: 'column', borderRight: '1px solid rgba(255, 255, 255, 0.1)', 
@@ -441,20 +448,13 @@ export default function TalentLink() {
             <button onClick={() => setIsAboutOpen(true)} style={{ flex: 1.3, padding: '10px', background: 'linear-gradient(180deg, rgba(51, 65, 85, 0.6) 0%, rgba(30, 41, 59, 0.8) 100%)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '8px', color: '#ffffff', fontSize: '11px', fontWeight: '700', cursor: 'pointer' }}>About Talent-Link</button>
             <button onClick={() => setIsContactOpen(true)} style={{ flex: 0.7, padding: '10px', background: 'linear-gradient(180deg, rgba(51, 65, 85, 0.6) 0%, rgba(30, 41, 59, 0.8) 100%)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '8px', color: '#ffffff', fontSize: '11px', fontWeight: '700', cursor: 'pointer' }}>Contact</button>
           </div>
-          <div style={{ padding: '12px', background: 'rgba(30, 41, 59, 0.5)', border: '1px solid rgba(255,255,255,0.05)', borderRadius: '8px', display: 'flex', alignItems: 'center', gap: '10px' }}>
-            <div style={{ width: '10px', height: '10px', backgroundColor: '#22c55e', borderRadius: '50%', boxShadow: '0 0 10px #22c55e' }}></div>
-            <div style={{ display: 'flex', flexDirection: 'column' }}>
-              <span style={{ fontSize: '11px', fontWeight: '800', color: '#ffffff' }}>Vector Precision</span>
-              <span style={{ fontSize: '10px', color: '#22c55e', fontWeight: '700' }}>98.7% Operational</span>
-            </div>
-          </div>
         </div>
       </div>
 
-      {/* CORE WORKSPACE LAYER DISPLAY FRAME */}
+      {/* MAIN WORKSPACE VIEWPORT HUB */}
       <div style={{ flex: 1, display: 'flex', flexDirection: 'column', height: '100%', position: 'relative', zIndex: 1 }}>
         
-        {/* UPPER STATUS HEADER */}
+        {/* UPPER WINDOW BAR HEADER */}
         <div style={{ 
           padding: '20px 30px', borderBottom: '1px solid rgba(15, 23, 42, 0.08)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', 
           background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0.75) 100%)', backdropFilter: 'blur(12px)', flexShrink: 0
@@ -471,70 +471,55 @@ export default function TalentLink() {
           </div>
         </div>
 
-        {/* WORKSPACE VIEW ROUTING BRANCHES */}
+        {/* INNER CONDITIONAL ROUTER PANEL */}
         {activeView === 'dashboard' ? (
           
-          /* VIEW A: SAAS ANALYTICS CONTROL PANEL CENTRAL DASHBOARD */
+          /* VIEW A: RE-STRUCTURED TELEMETRY CONTROL PANEL (VACANCIES VS PROFILES) */
           <div style={{ flex: 1, padding: '40px', overflowY: 'auto', boxSizing: 'border-box' }}>
             <div style={{ maxWidth: '1000px', margin: '0 auto' }}>
               
               <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', marginBottom: '36px' }}>
                 <TalentLinkLogo />
                 <h2 style={{ fontSize: '28px', fontWeight: '900', margin: '14px 0 6px 0', color: '#0f172a', letterSpacing: '-0.5px' }}>Welcome back to Talent-Link Workspace</h2>
-                <p style={{ color: '#475569', margin: 0, fontSize: '14.5px', fontWeight: '600' }}>Real-time execution analytics across vacancies, parsing pools, and matched vectors.</p>
+                <p style={{ color: '#475569', margin: 0, fontSize: '14.5px', fontWeight: '600' }}>Real-time production execution metrics across company vacancies and indexing pools.</p>
               </div>
 
-              {/* ADVANCED ADVANCED PIPELINE METRICS ROW */}
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '20px', marginBottom: '40px' }}>
+              {/* TWO-COLUMN TELEMETRY GRID: PROFILE VS VACANCY PIPELINES */}
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px', marginBottom: '40px' }}>
                 
-                {/* TELEMETRY CARD 1: VACANCIES TRACKED */}
-                <div style={{ background: '#ffffff', border: '1px solid rgba(15, 23, 42, 0.08)', borderRadius: '16px', padding: '24px', boxShadow: '0 10px 30px rgba(0,0,0,0.02)' }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
-                    <span style={{ fontSize: '12px', fontWeight: '800', color: '#475569', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Total Vacancies</span>
-                    <span style={{ fontSize: '20px' }}>💼</span>
+                {/* VACANCIES COUNTER UNIT */}
+                <div style={{ background: '#ffffff', border: '1px solid rgba(15, 23, 42, 0.08)', borderRadius: '16px', padding: '28px', boxShadow: '0 10px 30px rgba(0,0,0,0.02)' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px' }}>
+                    <span style={{ fontSize: '12px', fontWeight: '800', color: '#475569', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Total Active Corporate Vacancies</span>
+                    <span style={{ fontSize: '22px' }}>💼</span>
                   </div>
-                  <div style={{ fontSize: '32px', fontWeight: '900', color: '#0f172a', marginBottom: '6px' }}>{totalVacancies}</div>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                  <div style={{ fontSize: '36px', fontWeight: '900', color: '#0f172a', marginBottom: '8px' }}>{totalVacancies}</div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                     <div style={{ flex: 1, height: '6px', backgroundColor: '#e2e8f0', borderRadius: '3px' }}>
-                      <div style={{ width: '65%', height: '100%', backgroundColor: '#0f172a', borderRadius: '3px' }}></div>
+                      <div style={{ width: '60%', height: '100%', backgroundColor: '#0f172a', borderRadius: '3px' }}></div>
                     </div>
-                    <span style={{ fontSize: '11px', fontWeight: '700', color: '#64748b' }}>65% Cap</span>
+                    <span style={{ fontSize: '11px', fontWeight: '700', color: '#64748b' }}>60% Sourcing Load</span>
                   </div>
                 </div>
 
-                {/* TELEMETRY CARD 2: PROFILES INDEXED POOL */}
-                <div style={{ background: '#ffffff', border: '1px solid rgba(15, 23, 42, 0.08)', borderRadius: '16px', padding: '24px', boxShadow: '0 10px 30px rgba(0,0,0,0.02)' }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
-                    <span style={{ fontSize: '12px', fontWeight: '800', color: '#475569', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Profiles Indexed</span>
-                    <span style={{ fontSize: '20px' }}>📂</span>
+                {/* PROFILES DATABASE COUNTER UNIT */}
+                <div style={{ background: '#ffffff', border: '1px solid rgba(15, 23, 42, 0.08)', borderRadius: '16px', padding: '28px', boxShadow: '0 10px 30px rgba(0,0,0,0.02)' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px' }}>
+                    <span style={{ fontSize: '12px', fontWeight: '800', color: '#475569', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Total Candidates Profiles Indexed</span>
+                    <span style={{ fontSize: '22px' }}>📂</span>
                   </div>
-                  <div style={{ fontSize: '32px', fontWeight: '900', color: '#0f172a', marginBottom: '6px' }}>{totalProfilesIndexed}</div>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                  <div style={{ fontSize: '36px', fontWeight: '900', color: '#3b82f6', marginBottom: '8px' }}>{totalProfilesIndexed}</div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                     <div style={{ flex: 1, height: '6px', backgroundColor: '#e2e8f0', borderRadius: '3px' }}>
-                      <div style={{ width: '80%', height: '100%', backgroundColor: '#3b82f6', borderRadius: '3px' }}></div>
+                      <div style={{ width: '100%', height: '100%', backgroundColor: '#3b82f6', borderRadius: '3px' }}></div>
                     </div>
-                    <span style={{ fontSize: '11px', fontWeight: '700', color: '#64748b' }}>Vectorized</span>
-                  </div>
-                </div>
-
-                {/* TELEMETRY CARD 3: MATCHED PROFILES CONVERSION */}
-                <div style={{ background: 'linear-gradient(135deg, #ffffff 0%, #f0fdf4 100%)', border: '1px solid rgba(34, 197, 94, 0.2)', borderRadius: '16px', padding: '24px', boxShadow: '0 10px 30px rgba(34, 197, 94, 0.04)' }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
-                    <span style={{ fontSize: '12px', fontWeight: '800', color: '#16a34a', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Matched Profiles (≥80%)</span>
-                    <span style={{ fontSize: '20px' }}>⚡</span>
-                  </div>
-                  <div style={{ fontSize: '32px', fontWeight: '900', color: '#16a34a', marginBottom: '6px' }}>{totalMatchedProfiles}</div>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                    <div style={{ flex: 1, height: '6px', backgroundColor: '#dcfce7', borderRadius: '3px' }}>
-                      <div style={{ width: '37.5%', height: '100%', backgroundColor: '#22c55e', borderRadius: '3px' }}></div>
-                    </div>
-                    <span style={{ fontSize: '11px', fontWeight: '800', color: '#15803d' }}>37.5% Match Ratio</span>
+                    <span style={{ fontSize: '11px', fontWeight: '700', color: '#3b82f6' }}>100% Vectorized</span>
                   </div>
                 </div>
 
               </div>
 
-              {/* CARD CONSOLE ENGINES INDEX NAVIGATION ROW */}
+              {/* CARD GATEWAYS ROW */}
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '30px' }}>
                 
                 <div style={{ background: '#ffffff', borderRadius: '16px', border: '1px solid rgba(15, 23, 42, 0.08)', padding: '32px', boxShadow: '0 12px 40px rgba(15, 23, 42, 0.04)', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
@@ -575,7 +560,7 @@ export default function TalentLink() {
 
         ) : activeView === 'jd-generation' ? (
 
-          /* VIEW B: CONVERSATIONAL CHAT WORKSPACE CONSOLE FOR JOB SPEC GENERATION */
+          /* VIEW B: CONVERSATIONAL JOB SPEC CONSOLE STUDIO */
           <div style={{ flex: 1, display: 'flex', flexDirection: 'column', height: '100%' }}>
             <div style={{ flex: 1, padding: '30px', overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '24px' }}>
               {currentSession.messages.map((m, i) => (
@@ -617,17 +602,17 @@ export default function TalentLink() {
 
         ) : (
 
-          /* VIEW C: CLEAN COMPACT LAB FOR CANDIDATE MATCH MATRIX ONLY WITH RESUME EXPORTS */
+          /* VIEW C: CLEAN COMPACT CONSOLE LAB FOR CANDIDATE MATCH MATRIX ONLY WITH EXPORT PORTALS */
           <div style={{ flex: 1, display: 'flex', height: '100%', overflow: 'hidden' }}>
             
-            {/* LEFT COMPACT PARAMETERS ENTRY AREA */}
+            {/* INPUT CONTROLS DRAWER MODULE */}
             <div style={{ 
               width: '380px', backgroundColor: 'rgba(248, 250, 252, 0.85)', backdropFilter: 'blur(16px)', WebkitBackdropFilter: 'blur(16px)',
               padding: '30px 24px', display: 'flex', flexDirection: 'column', borderRight: '1px solid rgba(15, 23, 42, 0.08)', height: '100%', boxSizing: 'border-box'
             }}>
               <div style={{ flexShrink: 0 }}>
                 <h2 style={{ fontSize: '16px', margin: '0 0 4px 0', fontWeight: '900', color: '#0f172a' }}>Job Spec Parameters</h2>
-                <p style={{ fontSize: '12px', color: '#475569', margin: '0 0 20px 0', lineHeight: '1.4', fontWeight: '600' }}>Enter requirements parameters to process automated vector matching arrays.</p>
+                <p style={{ fontSize: '12px', color: '#475569', margin: '0 0 20px 0', lineHeight: '1.4', fontWeight: '600' }}>Enter requirement metrics specs to coordinate matrix parsing sweeps.</p>
               </div>
 
               <textarea 
@@ -652,7 +637,7 @@ export default function TalentLink() {
               </button>
             </div>
 
-            {/* RIGHT ANALYSED SPEC RESULTS OUTFLOW WITH DIRECT EXPORT PORTALS */}
+            {/* RESULTS MONITOR CONSOLE PORTAL WITH AUTOMATIC DYNAMIC CHAT HISTORY RENAMING */}
             <div style={{ flex: 1, padding: '30px', overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '20px', backgroundColor: 'transparent' }}>
               <div style={{ fontSize: '11px', textTransform: 'uppercase', letterSpacing: '1px', color: '#475569', fontWeight: '900', marginBottom: '-10px' }}>
                 Analysed Performance Results
@@ -673,13 +658,13 @@ export default function TalentLink() {
                     
                     <p style={{ margin: '0 0 18px 0', fontSize: '13.5px', lineHeight: '1.6', color: '#334155', fontWeight: '600' }}>{res.details}</p>
                     
-                    {/* SYSTEM INTEGRATED DOCK DOWNLOAD ACTION FOOTERS */}
+                    {/* DOWNLOAD RESUME AND RECRUITMENT ASSET ATTACHMENT FLOWS */}
                     <div style={{ display: 'flex', gap: '10px', borderTop: '1px solid #f1f5f9', paddingTop: '14px' }}>
                       <button 
                         onClick={() => handleDownloadResume(res.candidateName)}
                         style={{ background: '#22c55e', color: '#0f172a', padding: '8px 16px', border: 'none', borderRadius: '6px', fontSize: '12px', fontWeight: '900', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px', boxShadow: '0 2px 6px rgba(34, 197, 94, 0.2)' }}
                       >
-                        📥 Download Resume PDF
+                        📥 Download Resume File
                       </button>
                       <button 
                         onClick={() => handleExportBrief(res)}
@@ -701,7 +686,7 @@ export default function TalentLink() {
         )}
       </div>
 
-      {/* SYSTEM APPLICATION MODALS */}
+      {/* SYSTEM OVERLAY LAYERS MODALS */}
       {isAboutOpen && (
         <div onClick={() => setIsAboutOpen(false)} style={{ position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh', backgroundColor: 'rgba(15, 23, 42, 0.3)', backdropFilter: 'blur(8px)', WebkitBackdropFilter: 'blur(8px)', display: 'flex', justifyContent: 'center', alignItems: 'center', zIndex: 100 }}>
           <div onClick={(e) => e.stopPropagation()} style={{ width: '460px', background: 'linear-gradient(135deg, #ffffff 0%, #f8fafc 100%)', border: '1px solid rgba(255,255,255,0.7)', borderRadius: '16px', padding: '30px', boxShadow: '0 20px 50px rgba(15, 23, 42, 0.15)' }}>

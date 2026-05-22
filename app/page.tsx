@@ -174,69 +174,96 @@ export default function TalentLink() {
     };
     window.addEventListener('resize', handleResize);
 
-    interface NexusItem {
+    interface GraphicNode {
       x: number;
       y: number;
       vx: number;
       vy: number;
-      radius: number;
-      type: number;
+      scale: number;
+      type: 'job' | 'resume' | 'candidate';
+      opacity: number;
     }
 
-    const items: NexusItem[] = [];
-    const totalItems = 30;
+    const items: GraphicNode[] = [];
+    const entityTypes: ('job' | 'resume' | 'candidate')[] = ['job', 'resume', 'candidate'];
 
-    for (let i = 0; i < totalItems; i++) {
+    for (let i = 0; i < 25; i++) {
       items.push({
         x: Math.random() * width,
         y: Math.random() * height,
-        vx: (Math.random() - 0.5) * 0.25, 
-        vy: (Math.random() - 0.5) * 0.25,
-        radius: Math.random() * 2 + 2,
-        type: i % 2
+        vx: (Math.random() - 0.5) * 0.2, 
+        vy: (Math.random() - 0.5) * 0.2,
+        scale: Math.random() * 0.4 + 0.6,
+        type: entityTypes[i % 3],
+        opacity: Math.random() * 0.04 + 0.03 // Kept very low so it never competes with the text overlay
       });
     }
 
     const draw = () => {
       ctx.clearRect(0, 0, width, height);
       
-      // Significantly brighter background canvas filling logic to improve contrast
+      // Crisp white to slate clean layout backdrop gradient
       const gradient = ctx.createLinearGradient(0, 0, width, height);
       gradient.addColorStop(0, '#ffffff');
-      gradient.addColorStop(0.5, '#fdfdfd');
+      gradient.addColorStop(0.4, '#fcfdfe');
       gradient.addColorStop(1, '#f1f5f9');
       ctx.fillStyle = gradient;
       ctx.fillRect(0, 0, width, height);
 
-      for (let i = 0; i < items.length; i++) {
-        for (let j = i + 1; j < items.length; j++) {
-          const dist = Math.hypot(items[i].x - items[j].x, items[j].y - items[j].y);
-          if (dist < 200) {
-            ctx.beginPath();
-            ctx.moveTo(items[i].x, items[i].y);
-            ctx.lineTo(items[j].x, items[j].y);
-            const alpha = (1 - dist / 200) * 0.12;
-            ctx.strokeStyle = `rgba(30, 41, 59, ${alpha})`;
-            ctx.lineWidth = 0.8;
-            ctx.stroke();
-          }
-        }
-      }
-
+      // Rendering background context symbols
       items.forEach((item) => {
         item.x += item.vx;
         item.y += item.vy;
-        if (item.x < 0) item.x = width;
-        if (item.x > width) item.x = 0;
-        if (item.y < 0) item.y = height;
-        if (item.y > height) item.y = 0;
+
+        if (item.x < -50) item.x = width + 50;
+        if (item.x > width + 50) item.x = -50;
+        if (item.y < -50) item.y = height + 50;
+        if (item.y > height + 50) item.y = -50;
 
         ctx.save();
         ctx.translate(item.x, item.y);
-        ctx.beginPath();
-        ctx.arc(0, 0, item.type === 0 ? item.radius : item.radius + 1, 0, Math.PI * 2);
-        ctx.fillStyle = item.type === 0 ? 'rgba(15, 23, 42, 0.2)' : 'rgba(34, 197, 94, 0.45)';
-        ctx.fill();
+        ctx.scale(item.scale, item.scale);
+        
+        if (item.type === 'job') {
+          // Render Abstract Briefcase
+          ctx.fillStyle = `rgba(15, 23, 42, ${item.opacity})`;
+          ctx.strokeStyle = `rgba(15, 23, 42, ${item.opacity * 1.5})`;
+          ctx.lineWidth = 2;
+          ctx.beginPath();
+          ctx.roundRect(-20, -10, 40, 26, 4);
+          ctx.fill();
+          ctx.stroke();
+          ctx.beginPath();
+          ctx.roundRect(-8, -17, 16, 8, [3, 3, 0, 0]);
+          ctx.stroke();
+        } else if (item.type === 'resume') {
+          // Render Abstract Document Spec Sheet
+          ctx.fillStyle = `rgba(34, 197, 94, ${item.opacity * 1.2})`;
+          ctx.strokeStyle = `rgba(22, 163, 74, ${item.opacity * 1.5})`;
+          ctx.lineWidth = 2;
+          ctx.beginPath();
+          ctx.roundRect(-15, -20, 30, 40, 3);
+          ctx.fill();
+          ctx.stroke();
+          // Text line indicators inside standard resume
+          ctx.strokeStyle = `rgba(15, 23, 42, ${item.opacity * 0.8})`;
+          ctx.lineWidth = 1.5;
+          ctx.beginPath();
+          ctx.moveTo(-9, -10); ctx.lineTo(9, -10);
+          ctx.moveTo(-9, -2);  ctx.lineTo(4, -2);
+          ctx.moveTo(-9, 6);   ctx.lineTo(7, 6);
+          ctx.stroke();
+        } else {
+          // Render Abstract Candidate Badge Vector 
+          ctx.fillStyle = `rgba(15, 23, 42, ${item.opacity * 0.8})`;
+          ctx.beginPath();
+          ctx.arc(0, -8, 8, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.beginPath();
+          ctx.arc(0, 14, 14, Math.PI, 0);
+          ctx.fill();
+        }
+        
         ctx.restore();
       });
 

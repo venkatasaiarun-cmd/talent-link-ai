@@ -687,12 +687,12 @@ export default function TalentLink() {
                 {currentSession.messages.map((msg, index) => (
                   <div key={index} style={{ display: 'flex', justifyContent: msg.role === 'user' ? 'flex-end' : 'flex-start' }}>
                     <div style={{
-                      maxWidth: '80%', padding: '14px 16px', borderRadius: '12px', fontSize: '13.5px', lineHeight: '1.5',
+                      maxWidth: '80%', padding: '14px 16px', fontSize: '13.5px', lineHeight: '1.5',
                       boxShadow: '0 2px 8px rgba(0,0,0,0.01)',
                       background: msg.role === 'user' ? 'linear-gradient(135deg, #1e293b 0%, #0f172a 100%)' : '#ffffff',
                       color: msg.role === 'user' ? '#ffffff' : '#334155',
                       border: msg.role === 'user' ? 'none' : '1px solid rgba(15,23,42,0.05)',
-                      borderRadiusPattern: msg.role === 'user' ? '12px 12px 2px 12px' : '12px 12px 12px 2px'
+                      borderRadius: msg.role === 'user' ? '12px 12px 2px 12px' : '12px 12px 12px 2px'
                     }}>
                       <div style={{ fontWeight: '800', fontSize: '11px', textTransform: 'uppercase', marginBottom: '4px', opacity: msg.role === 'user' ? 0.7 : 0.5 }}>
                         {msg.role === 'user' ? 'Operator Context Input' : 'Talent-Link Assistant Pipeline'}

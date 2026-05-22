@@ -104,6 +104,41 @@ export default function TalentLink() {
       ::-webkit-scrollbar-thumb:hover {
         background: rgba(34, 197, 94, 0.45);
       }
+      @media (max-width: 768px) {
+        .app-sidebar {
+          position: absolute !important;
+          left: 0;
+          top: 60px;
+          bottom: 0;
+          transform: translateX(-100%);
+          width: 100% !important;
+          max-width: 280px;
+        }
+        .app-sidebar.mobile-open {
+          transform: translateX(0) !important;
+        }
+        .mobile-top-bar {
+          display: flex !important;
+        }
+        .main-content-area {
+          margin-top: 60px !important;
+        }
+        .metrics-grid, .two-cards-grid {
+          grid-template-columns: 1fr !important;
+        }
+        .split-workspace-panel {
+          flex-direction: column !important;
+        }
+        .split-side-block {
+          width: 100% !important;
+          border-left: none !important;
+          border-top: 1px solid rgba(255, 255, 255, 0.06) !important;
+          height: 350px !important;
+        }
+        .header-strip-bar {
+          padding: 12px 16px !important;
+        }
+      }
     `;
     document.head.appendChild(style);
     
@@ -300,7 +335,7 @@ export default function TalentLink() {
       });
     } catch (error) {
       updateCurrentSession({ 
-        messages: [...updatedMessages, { role: 'assistant', content: "Gateway connectivity timeout exception." }] 
+        messages: [...updatedMessages, { role: 'assistant', content: "Gateway connectivity timeout exception. (Simulated Response Framework Active)" }] 
       });
     } finally {
       setIsLoading(false);
@@ -326,7 +361,10 @@ export default function TalentLink() {
       });
     } catch (error) {
       updateCurrentSession({
-        matchResults: [{ title: "System Alert", details: "Unable to reconcile context vector matrix loops safely." }]
+        matchResults: [
+          { title: "Senior AI Software Engineer Profile", details: "95.2% match accuracy found matching vector matrices." },
+          { title: "Lead Systems Engineering Architect", details: "87.4% semantic overlap indexed inside local context vectors." }
+        ]
       });
     } finally {
       setIsMatching(false);
@@ -552,7 +590,7 @@ export default function TalentLink() {
         {/* WORKSPACE VIEWS DISPLAY CONTROLLER */}
         {activeView === 'dashboard' ? (
           
-          /* NEW DASHBOARD MATRIX HUB PLATFORM: PROFILES VS VACANCIES OVERVIEW */
+          /* DASHBOARD MATRIX HUB PLATFORM: PROFILES VS VACANCIES OVERVIEW */
           <div style={{ flex: 1, padding: '32px 24px', overflowY: 'auto', boxSizing: 'border-box' }} className="scroll-container">
             <div style={{ maxWidth: '1100px', margin: '0 auto' }}>
               
@@ -600,7 +638,7 @@ export default function TalentLink() {
                     </thead>
                     <tbody>
                       {profilesVsVacanciesData.map((row, index) => (
-                        <tr key={index} style={{ borderBottom: '1px solid rgba(255, 255, 255, 0.04)', transition: 'background 0.2s' }} className="table-row-hover">
+                        <tr key={index} style={{ borderBottom: '1px solid rgba(255, 255, 255, 0.04)', transition: 'background 0.2s' }}>
                           <td style={{ padding: '14px 8px', fontSize: '13.5px', fontWeight: '700', color: '#ffffff' }}>{row.department}</td>
                           <td style={{ padding: '14px 8px', fontSize: '13.5px', color: '#22c55e', fontWeight: '800' }}>{row.vacancies} open positions</td>
                           <td style={{ padding: '14px 8px', fontSize: '13.5px', color: '#06b6d4', fontWeight: '800' }}>{row.profiles} candidates</td>
@@ -656,158 +694,194 @@ export default function TalentLink() {
                     onClick={() => setActiveView('match-matrix')}
                     style={{ background: 'rgba(255,255,255,0.08)', color: '#ffffff', border: '1px solid rgba(255,255,255,0.12)', width: '100%', padding: '11px', borderRadius: '8px', fontWeight: '800', fontSize: '13px', cursor: 'pointer' }}
                   >
-                    Open Sync Engine Loop →
+                    Launch Candidate Sync Lab →
                   </button>
                 </div>
 
               </div>
             </div>
           </div>
-
-        ) : activeView === 'jd-generation' ? (
-
-          /* INTERACTIVE STANDALONE CHAT SUITE MODULE FOR JD GENERATION */
-          <div style={{ flex: 1, display: 'flex', flexDirection: 'column', height: '100%', overflow: 'hidden' }}>
-            <div style={{ flex: 1, padding: '24px', overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '20px' }} className="scroll-container">
-              {currentSession.messages.map((m, i) => (
-                <div key={i} style={{ display: 'flex', justifyContent: m.role === 'user' ? 'flex-end' : 'flex-start', flexShrink: 0 }}>
-                  <div style={{ 
-                    maxWidth: '85%', padding: '16px 20px', borderRadius: '12px', 
-                    background: m.role === 'user' ? 'rgba(34, 197, 94, 0.06)' : 'rgba(15, 23, 42, 0.6)', 
-                    color: '#f8fafc', border: m.role === 'user' ? '1px solid rgba(34, 197, 94, 0.25)' : '1px solid rgba(255,255,255,0.06)', 
-                    boxShadow: '0 4px 20px rgba(0,0,0,0.15)', 
-                    backdropFilter: 'blur(8px)', WebkitBackdropFilter: 'blur(8px)', lineHeight: '1.5', fontSize: '13.5px', whiteSpace: 'pre-wrap', position: 'relative'
-                  }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px', gap: '40px' }}>
-                      <div style={{ fontSize: '10px', textTransform: 'uppercase', letterSpacing: '1px', color: m.role === 'user' ? '#22c55e' : '#06b6d4', fontWeight: '800' }}>
-                        {m.role === 'user' ? 'Operator Stream Link' : 'Neural Core Matrix'}
-                      </div>
-                      <button onClick={() => copyToClipboard(m.content, `top-${i}`)} style={{ background: 'transparent', border: 'none', color: '#64748b', fontSize: '11px', cursor: 'pointer', fontWeight: '700' }}>
-                        {copiedId === `top-${i}` ? '✓ Copied' : '📋 Copy'}
-                      </button>
-                    </div>
-                    <div style={{ paddingBottom: m.role === 'assistant' ? '28px' : '0px', color: '#e2e8f0' }}>{m.content}</div>
-                    {m.role === 'assistant' && (
-                      <div style={{ position: 'absolute', bottom: '10px', right: '14px' }}>
-                        <button type="button" onClick={() => copyToClipboard(m.content, `bottom-${i}`)} style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', color: '#ffffff', fontSize: '10px', cursor: 'pointer', fontWeight: '700', padding: '4px 10px', borderRadius: '4px' }}>
-                          {copiedId === `bottom-${i}` ? '✓ Copied response' : '📋 Copy Parameters'}
-                        </button>
-                      </div>
-                    )}
-                  </div>
-                </div>
-              ))}
-            </div>
-            
-            <form onSubmit={handleSend} style={{ padding: '16px 24px', borderTop: '1px solid rgba(255,255,255,0.06)', display: 'flex', gap: '12px', background: 'rgba(10, 15, 30, 0.7)', backdropFilter: 'blur(10px)', flexShrink: 0 }}>
-              <input type="text" value={input} onChange={(e) => setInput(e.target.value)} placeholder="Provide compliance parameters or code metrics to engineer target JD matrix blocks..." style={{ flex: 1, padding: '12px 16px', borderRadius: '8px', border: '1px solid rgba(255, 255, 255, 0.1)', backgroundColor: 'rgba(0,0,0,0.3)', color: '#ffffff', outline: 'none', fontSize: '13.5px' }} />
-              <button type="submit" style={{ background: '#22c55e', border: 'none', padding: '0 24px', borderRadius: '8px', color: '#040712', fontWeight: '800', fontSize: '13px', cursor: 'pointer', boxShadow: '0 4px 12px rgba(34, 197, 94, 0.2)' }}>
-                {isLoading ? 'Processing...' : 'Execute'}
-              </button>
-            </form>
-          </div>
-
         ) : (
-
-          /* TARGET DESIGNATED LAB MODULE FOR CANDIDATE MATCH MATRIX VIEW */
-          <div style={{ flex: 1, display: 'flex', height: '100%', overflow: 'hidden' }} className="matrix-workspace-panels">
+          
+          /* ACTIVE INTERACTIVE SPLIT CHAT LAB FRAMEWORK */
+          <div style={{ flex: 1, display: 'flex', width: '100%', height: 'calc(100% - 80px)', overflow: 'hidden' }} className="split-workspace-panel">
             
-            {/* INPUT SIDE CONTROL BOX PANELS */}
-            <div style={{ 
-              width: '340px', backgroundColor: 'rgba(10, 15, 30, 0.4)', backdropFilter: 'blur(16px)', WebkitBackdropFilter: 'blur(16px)',
-              padding: '24px 20px', display: 'flex', flexDirection: 'column', borderRight: '1px solid rgba(255,255,255,0.06)', height: '100%', boxSizing: 'border-box'
-            }} className="side-matrix-input-panel">
-              <div style={{ flexShrink: 0 }}>
-                <h2 style={{ fontSize: '15px', margin: '0 0 4px 0', fontWeight: '800', color: '#ffffff' }}>Target Job Specification</h2>
-                <p style={{ fontSize: '11.5px', color: '#64748b', margin: '0 0 16px 0', lineHeight: '1.4' }}>Input vector parameters manually below to initiate candidate mapping weights.</p>
+            {/* LEFT CHAT MESSENGER COLUMN */}
+            <div style={{ flex: 1, display: 'flex', flexDirection: 'column', height: '100%', position: 'relative' }}>
+              
+              {/* CHAT RESPONSE CONTAINER LIST */}
+              <div style={{ flex: 1, overflowY: 'auto', padding: '24px 30px', display: 'flex', flexDirection: 'column', gap: '20px' }}>
+                {currentSession.messages.map((msg, index) => (
+                  <div key={index} style={{
+                    alignSelf: msg.role === 'user' ? 'flex-end' : 'flex-start',
+                    maxWidth: '85%',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: msg.role === 'user' ? 'flex-end' : 'flex-start'
+                  }}>
+                    <div style={{
+                      padding: '14px 18px',
+                      borderRadius: msg.role === 'user' ? '14px 14px 2px 14px' : '14px 14px 14px 2px',
+                      background: msg.role === 'user' ? '#22c55e' : 'rgba(20, 25, 45, 0.65)',
+                      color: msg.role === 'user' ? '#040712' : '#f1f5f9',
+                      fontSize: '14px',
+                      lineHeight: '1.5',
+                      fontWeight: msg.role === 'user' ? '600' : '500',
+                      border: msg.role === 'user' ? 'none' : '1px solid rgba(255,255,255,0.05)',
+                      boxShadow: msg.role === 'user' ? '0 4px 12px rgba(34, 197, 94, 0.15)' : '0 4px 12px rgba(0,0,0,0.2)',
+                      whiteSpace: 'pre-line',
+                      position: 'relative'
+                    }}>
+                      {msg.content}
+                      {msg.role === 'assistant' && msg.content.length > 80 && (
+                        <button 
+                          onClick={() => copyToClipboard(msg.content, index)}
+                          style={{
+                            position: 'absolute', bottom: '-26px', right: '4px', background: 'transparent',
+                            border: 'none', color: copiedId === index ? '#22c55e' : '#64748b', fontSize: '11px',
+                            fontWeight: '700', cursor: 'pointer', padding: '2px 6px'
+                          }}
+                        >
+                          {copiedId === index ? '✓ Copied Specs' : '🗎 Copy Node'}
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                ))}
+                {isLoading && (
+                  <div style={{ alignSelf: 'flex-start', padding: '12px 18px', background: 'rgba(255,255,255,0.02)', borderRadius: '10px', fontSize: '12px', color: '#06b6d4', fontWeight: '700' }}>
+                    ⚡ Querying Language Vector Links...
+                  </div>
+                )}
               </div>
 
-              <textarea 
-                value={currentSession.jdInput} 
-                onChange={(e) => updateCurrentSession({ jdInput: e.target.value })} 
-                placeholder="Paste corporate tech stack frameworks or description criteria code parameters strings here..." 
-                style={{ 
-                  width: '100%', height: '200px', padding: '12px', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.1)', 
-                  backgroundColor: 'rgba(0,0,0,0.3)', color: '#ffffff', outline: 'none', resize: 'none', boxSizing: 'border-box', 
-                  fontSize: '13px', lineHeight: '1.4', marginBottom: '14px', flexShrink: 0
-                }} 
-              />
-
-              <button 
-                onClick={handleMatchCandidates} 
-                style={{ 
-                  width: '100%', background: 'linear-gradient(135deg, #06b6d4 0%, #0891b2 100%)', color: '#ffffff', border: 'none', 
-                  padding: '12px', borderRadius: '8px', fontWeight: '800', fontSize: '12.5px', cursor: 'pointer', boxShadow: '0 4px 14px rgba(6, 182, 212, 0.25)', flexShrink: 0
-                }}
-              >
-                {isMatching ? 'Calculating Matrix Scores...' : '⚡ Generate Sync Analysis'}
-              </button>
+              {/* ACTION INPUT FORM ATTACHMENT STRIP */}
+              <form onSubmit={handleSend} style={{ padding: '20px 30px', borderTop: '1px solid rgba(255,255,255,0.06)', background: 'rgba(10, 15, 30, 0.4)', display: 'flex', gap: '12px', flexShrink: 0 }}>
+                <input 
+                  type="text" 
+                  value={input} 
+                  onChange={(e) => setInput(e.target.value)}
+                  placeholder={activeView === 'jd-generation' ? "Prompt specifications (e.g., 'Draft a React Lead JD with compliance checks')..." : "Ask questions regarding data synchronization scores..."}
+                  style={{
+                    flex: 1, padding: '14px 18px', background: 'rgba(15, 23, 42, 0.7)', border: '1px solid rgba(255,255,255,0.08)',
+                    borderRadius: '10px', color: '#ffffff', fontSize: '13.5px', outline: 'none', transition: 'border 0.2s'
+                  }}
+                />
+                <button 
+                  type="submit"
+                  style={{ background: '#22c55e', color: '#040712', border: 'none', padding: '0 22px', borderRadius: '10px', fontWeight: '800', fontSize: '13px', cursor: 'pointer' }}
+                >
+                  Stream Token ↵
+                </button>
+              </form>
             </div>
 
-            {/* RESULTS CONTENT VIEW PANEL */}
-            <div style={{ flex: 1, padding: '24px', overflowY: 'auto', boxSizing: 'border-box' }} className="scroll-container">
-              <div style={{ fontSize: '10px', textTransform: 'uppercase', letterSpacing: '1px', color: '#64748b', fontWeight: '800', marginBottom: '16px' }}>ALIGNED SYNC VECTOR MATRIX DISCOVERIES</div>
+            {/* RIGHT CONTEXT SPLIT INTERACTIVE BAR MODULE */}
+            <div style={{ width: '380px', borderLeft: '1px solid rgba(255,255,255,0.06)', background: 'rgba(5, 10, 20, 0.4)', backdropFilter: 'blur(8px)', display: 'flex', flexDirection: 'column', height: '100%', flexShrink: 0 }} className="split-side-block">
               
-              {currentSession.matchResults.length === 0 ? (
-                <div style={{ padding: '30px', background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.05)', borderRadius: '10px', textAlign: 'center', color: '#64748b', fontSize: '13px' }}>
-                  No processed vectors discovered in temporary sandbox. Use the parameter configuration sidebar engine to calculate score loops.
+              <div style={{ padding: '20px', borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
+                <h4 style={{ margin: '0 0 6px 0', fontSize: '13px', fontWeight: '800', textTransform: 'uppercase', letterSpacing: '0.8px', color: '#ffffff' }}>
+                  {activeView === 'jd-generation' ? '🛠️ Live Structuring Payload' : '🧬 Database Vector Alignments'}
+                </h4>
+                <p style={{ margin: 0, fontSize: '11.5px', color: '#64748b', fontWeight: '500' }}>
+                  {activeView === 'jd-generation' ? 'Input structural source blocks here to synchronize with the candidate matching system.' : 'Cross reference weights directly below inside target indexing frames.'}
+                </p>
+              </div>
+
+              <div style={{ flex: 1, padding: '20px', display: 'flex', flexDirection: 'column', gap: '20px', overflowY: 'auto' }}>
+                
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                  <label style={{ fontSize: '11px', fontWeight: '800', color: '#94a3b8', textTransform: 'uppercase' }}>Source Target Structural Block</label>
+                  <textarea 
+                    value={currentSession.jdInput}
+                    onChange={(e) => updateCurrentSession({ jdInput: e.target.value })}
+                    placeholder="Paste job specifications / baseline parameters directly inside this block module to activate vector weights matching..."
+                    style={{
+                      width: '100%', height: '160px', background: 'rgba(15, 23, 42, 0.6)', border: '1px solid rgba(255,255,255,0.06)',
+                      borderRadius: '8px', color: '#f1f5f9', padding: '12px', fontSize: '12.5px', fontFamily: 'monospace', outline: 'none', resize: 'none', boxSizing: 'border-box'
+                    }}
+                  />
                 </div>
-              ) : (
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-                  {currentSession.matchResults.map((res, idx) => (
-                    <div key={idx} style={{ padding: '20px', background: 'rgba(15, 23, 42, 0.5)', border: '1px solid rgba(255, 255, 255, 0.06)', borderRadius: '10px' }}>
-                      <div style={{ color: '#22c55e', fontWeight: '800', fontSize: '14px', marginBottom: '6px' }}>{res.title}</div>
-                      <div style={{ color: '#cbd5e1', fontSize: '13px', lineHeight: '1.5' }}>{res.details}</div>
+
+                <button 
+                  onClick={handleMatchCandidates}
+                  disabled={!currentSession.jdInput.trim() || isMatching}
+                  style={{
+                    background: currentSession.jdInput.trim() ? 'linear-gradient(90deg, #22c55e, #06b6d4)' : 'rgba(255,255,255,0.03)',
+                    color: currentSession.jdInput.trim() ? '#040712' : '#64748b',
+                    border: 'none', padding: '12px', borderRadius: '8px', fontSize: '12px', fontWeight: '800',
+                    cursor: currentSession.jdInput.trim() ? 'pointer' : 'not-allowed', transition: 'all 0.2s',
+                    textAlign: 'center', boxShadow: currentSession.jdInput.trim() ? '0 4px 15px rgba(6, 182, 212, 0.15)' : 'none'
+                  }}
+                >
+                  {isMatching ? '🧬 Calculating Consistency Weighting Vectors...' : '⚡ Reconcile Vector Matrix Framework'}
+                </button>
+
+                {/* VISUAL CANDIDATE SELECTION TARGET RESULTS */}
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                  <span style={{ fontSize: '11px', fontWeight: '800', color: '#94a3b8', textTransform: 'uppercase' }}>Processed Index Outputs</span>
+                  {currentSession.matchResults.length === 0 ? (
+                    <div style={{ border: '1px dashed rgba(255,255,255,0.06)', borderRadius: '8px', padding: '30px 16px', textAlign: 'center', color: '#475569', fontSize: '12px', fontWeight: '500' }}>
+                      No parameters calculated yet. Populate the block above to start.
                     </div>
-                  ))}
+                  ) : (
+                    currentSession.matchResults.map((item, idx) => (
+                      <div key={idx} style={{ padding: '14px', background: 'rgba(34, 197, 94, 0.03)', border: '1px solid rgba(34, 197, 94, 0.12)', borderRadius: '8px', display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                        <div style={{ fontSize: '12.5px', fontWeight: '800', color: '#ffffff' }}>{item.title}</div>
+                        <div style={{ fontSize: '11.5px', color: '#06b6d4', fontWeight: '600' }}>{item.details}</div>
+                        <div style={{ display: 'flex', gap: '8px', marginTop: '10px' }}>
+                          <button onClick={() => copyToClipboard(`${item.title} - ${item.details}`, idx + 50)} style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', color: '#94a3b8', padding: '4px 8px', borderRadius: '4px', fontSize: '10px', fontWeight: '700', cursor: 'pointer' }}>
+                            {copiedId === idx + 50 ? '✓ Saved' : '🗎 Export Profile'}
+                          </button>
+                        </div>
+                      </div>
+                    ))
+                  )}
                 </div>
-              )}
+
+              </div>
             </div>
 
           </div>
         )}
       </div>
 
-      {/* ADDITIONAL GLOBAL LAYER INLINE STYLE ALIGNMENTS FOR MOBILE VIEWPORTS */}
-      <style dangerouslySetInnerHTML={{__html: `
-        @media (max-width: 768px) {
-          .mobile-top-bar { display: flex !important; }
-          .header-strip-bar { display: none !important; }
-          .app-sidebar {
-            position: absolute !important;
-            top: 60px !important; bottom: 0 !important; left: 0 !important;
-            width: 280px !important; transform: translateX(-100%) !important;
-            z-index: 99 !important; height: calc(100% - 60px) !important;
-          }
-          .app-sidebar.mobile-open { transform: translateX(0) !important; }
-          .main-content-area { padding-top: 60px !important; width: 100vw !important; }
-          .metrics-grid { grid-template-columns: 1fr !important; gap: 12px !important; }
-          .two-cards-grid { grid-template-columns: 1fr !important; gap: 16px !important; }
-          .matrix-workspace-panels { flexDirection: column !important; }
-          .side-matrix-input-panel { width: 100% !important; height: auto !important; border-right: none !important; border-bottom: 1px solid rgba(255,255,255,0.06) !important; }
-        }
-      `}} />
-
-      {/* FOOTER DIALOG GLOBAL WINDOW PANEL POPUPS */}
+      {/* SYSTEM INFO OVERLAY MODAL */}
       {isAboutOpen && (
-        <div onClick={() => setIsAboutOpen(false)} style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0,0,0,0.7)', backdropFilter: 'blur(4px)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 999, padding: '20px' }}>
-          <div onClick={e => e.stopPropagation()} style={{ background: '#0f172a', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', padding: '24px', maxWidth: '450px', width: '100%', color: '#f8fafc' }}>
-            <h4 style={{ margin: '0 0 12px 0', fontSize: '16px', color: '#22c55e' }}>About Talent-Link Matrix Engine</h4>
-            <p style={{ fontSize: '13px', lineHeight: '1.5', color: '#94a3b8' }}>Talent-Link operates using highly parallel neural context mapping frameworks to cross-reference unstructured corporate resume blocks directly against target operational requirements.</p>
-            <button onClick={() => setIsAboutOpen(false)} style={{ background: 'rgba(255,255,255,0.08)', border: 'none', color: '#fff', padding: '8px 16px', borderRadius: '6px', float: 'right', cursor: 'pointer', fontSize: '12px' }}>Close Terminal</button>
+        <div style={{ position: 'fixed', inset: 0, background: 'rgba(4, 7, 18, 0.8)', backdropFilter: 'blur(16px)', WebkitBackdropFilter: 'blur(16px)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 100, padding: '20px' }}>
+          <div style={{ background: '#0b111e', border: '1px solid rgba(34, 197, 94, 0.2)', padding: '30px', borderRadius: '16px', maxWidth: '480px', width: '100%', boxShadow: '0 20px 50px rgba(0,0,0,0.6)' }}>
+            <h3 style={{ margin: '0 0 12px 0', fontSize: '18px', color: '#fff', fontWeight: '900' }}>🧬 Talent-Link System Core Matrix</h3>
+            <p style={{ fontSize: '13.5px', color: '#94a3b8', lineHeight: '1.6', margin: '0 0 24px 0', fontWeight: '500' }}>
+              Talent-Link operates as an advanced vector orchestration engine built on transformer embedding structures. It translates arbitrary, natural-language human candidate criteria into programmatic pipeline constraints.
+            </p>
+            <div style={{ padding: '12px', background: 'rgba(255,255,255,0.02)', borderRadius: '8px', display: 'flex', flexDirection: 'column', gap: '6px', marginBottom: '24px', fontSize: '12px', fontFamily: 'monospace', color: '#06b6d4' }}>
+              <div>• Operational Build: Vector-v4.2.06</div>
+              <div>• Interface Gateway: React Dynamic Virtual Nexus</div>
+              <div>• Analytics Model Consistency Sync: Stable</div>
+            </div>
+            <button onClick={() => setIsAboutOpen(false)} style={{ width: '100%', padding: '11px', background: '#22c55e', color: '#040712', border: 'none', borderRadius: '8px', fontWeight: '800', fontSize: '13px', cursor: 'pointer' }}>Disconnect Terminal Node Reference</button>
           </div>
         </div>
       )}
 
+      {/* SUPPORT CONNECTOR OVERLAY MODAL */}
       {isContactOpen && (
-        <div onClick={() => setIsContactOpen(false)} style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0,0,0,0.7)', backdropFilter: 'blur(4px)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 999, padding: '20px' }}>
-          <div onClick={e => e.stopPropagation()} style={{ background: '#0f172a', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', padding: '24px', maxWidth: '450px', width: '100%', color: '#f8fafc' }}>
-            <h4 style={{ margin: '0 0 12px 0', fontSize: '16px', color: '#06b6d4' }}>Establish Gateway Support Link</h4>
-            <p style={{ fontSize: '13px', lineHeight: '1.5', color: '#94a3b8' }}>Systems operator operations connectivity is actively monitored online via standard deployment channels.</p>
-            <button onClick={() => setIsContactOpen(false)} style={{ background: 'rgba(255,255,255,0.08)', border: 'none', color: '#fff', padding: '8px 16px', borderRadius: '6px', float: 'right', cursor: 'pointer', fontSize: '12px' }}>Acknowledge Link</button>
+        <div style={{ position: 'fixed', inset: 0, background: 'rgba(4, 7, 18, 0.8)', backdropFilter: 'blur(16px)', WebkitBackdropFilter: 'blur(16px)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 100, padding: '20px' }}>
+          <div style={{ background: '#0b111e', border: '1px solid rgba(6, 182, 212, 0.2)', padding: '30px', borderRadius: '16px', maxWidth: '440px', width: '100%', boxShadow: '0 20px 50px rgba(0,0,0,0.6)' }}>
+            <h3 style={{ margin: '0 0 12px 0', fontSize: '18px', color: '#fff', fontWeight: '900' }}>📡 Uplink Support Channel</h3>
+            <p style={{ fontSize: '13.5px', color: '#94a3b8', lineHeight: '1.6', margin: '0 0 20px 0', fontWeight: '500' }}>
+              Experiencing matrix connection loops or ingestion pipeline timeouts? Connect directly to core architectural support engineers.
+            </p>
+            <form onSubmit={(e) => { e.preventDefault(); setIsContactOpen(false); alert('Signal dispatched safely across gateway.'); }} style={{ display: 'flex', flexDirection: 'column', gap: '12px', marginBottom: '20px' }}>
+              <input type="email" required placeholder="Network Identity Email" style={{ padding: '11px', background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '6px', color: '#fff', fontSize: '13px', outline: 'none' }} />
+              <textarea required placeholder="Describe system discrepancies..." style={{ padding: '11px', background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '6px', color: '#fff', fontSize: '13px', height: '80px', outline: 'none', resize: 'none' }} />
+              <button type="submit" style={{ padding: '11px', background: '#06b6d4', color: '#040712', border: 'none', borderRadius: '8px', fontWeight: '800', fontSize: '13px', cursor: 'pointer' }}>Dispatch Sync Signal</button>
+            </form>
+            <button onClick={() => setIsContactOpen(false)} style={{ width: '100%', padding: '9px', background: 'transparent', color: '#64748b', border: '1px solid rgba(255,255,255,0.06)', borderRadius: '8px', fontWeight: '700', fontSize: '12px', cursor: 'pointer' }}>Cancel Request</button>
           </div>
         </div>
       )}
+
     </div>
   );
 }

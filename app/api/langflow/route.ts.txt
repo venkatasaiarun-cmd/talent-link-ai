@@ -6,7 +6,7 @@ export async function POST(request: Request) {
 
     // Use the exact environment keys you setup earlier
     const targetUrl = process.env.LANGFLOW_URL || "https://motion-tracing-cinema.ngrok-free.dev/api/v1/run/2db123bf-c4f4-4d08-957f-83f69aff1356";
-    const token = process.env.LANGFLOW_TOKEN || "sk-8AntPz10jbht8h2drNyuBXB8t92cU5aZLYX68_OGWFU";
+    const token = process.env.LANGFLOW_TOKEN || "sk-4RjNlFMf1V-udpgTayVb1VLMz8e0OjnPDkeZ-k0lcuo";
 
     const response = await fetch(targetUrl, {
       method: 'POST',
